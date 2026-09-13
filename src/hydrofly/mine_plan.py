@@ -74,10 +74,13 @@ def numerical(plan,grid=False):
     return plan.aquifer().initial_head-a@np.array(plan.rates).ravel()
 
 def floor_at(plan,day):
-    return float(np.interp(day,np.arange(len(plan.floors)+1)*365,[plan.initial_floor,*plan.floors]))
+    # Right-continuous steps: the new bench applies exactly at its year-end date.
+    index=min(max(int(day//365),0),len(plan.floors))
+    return float([plan.initial_floor,*plan.floors][index])
 
 def target_heads(plan):
-    return np.interp(np.arange(1,len(plan.floors)*12+1)/12,np.arange(len(plan.floors)+1),[plan.initial_floor,*plan.floors])-5
+    indices=np.arange(1,len(plan.floors)*12+1)//12
+    return np.asarray([plan.initial_floor,*plan.floors])[indices]-5
 
 def timeline(plan,h):
     times=np.arange(len(plan.floors)*12+1)*365/12

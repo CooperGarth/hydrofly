@@ -22,7 +22,7 @@ export function createFlyConsole(scene){
    const x=t=>48+t/rows.length*445,y=h=>191-(h-lo)/(hi-lo)*145;
    ctx.font='10px monospace';ctx.fillStyle='#a5bea2';ctx.fillText('m AHD',3,40);
    for(let i=0;i<=3;i++){const h=lo+(hi-lo)*i/3;ctx.strokeStyle='#355547';ctx.beginPath();ctx.moveTo(48,y(h));ctx.lineTo(493,y(h));ctx.stroke();ctx.fillText(h.toFixed(0),4,y(h)+3);}
-   for(const [key,color,dash]of [['floor','#d6b78d',[]],['target','#e4a06f',[5,3]]]){ctx.strokeStyle=color;ctx.lineWidth=2;ctx.setLineDash(dash);ctx.beginPath();ctx.moveTo(x(0),y(model.initial_floor-(key==='target'?5:0)));rows.forEach((r,i)=>ctx.lineTo(x(i+1),y(r[key])));ctx.stroke();}
+   for(const [key,color,dash]of [['floor','#d6b78d',[]],['target','#e4a06f',[5,3]]]){ctx.strokeStyle=color;ctx.lineWidth=2;ctx.setLineDash(dash);ctx.beginPath();ctx.moveTo(x(0),y(model.initial_floor-(key==='target'?5:0)));rows.forEach((r,i)=>{ctx.lineTo(x(i+1),y(i?rows[i-1][key]:model.initial_floor-(key==='target'?5:0)));ctx.lineTo(x(i+1),y(r[key]));});ctx.stroke();}
    ctx.setLineDash([]);ctx.strokeStyle='#76d5de';ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(x(p.t),y(p.h)):ctx.moveTo(x(p.t),y(p.h)));ctx.stroke();
    points.forEach(p=>{ctx.fillStyle=p.h>p.target+1e-5?'#f39a73':'#76d5de';ctx.beginPath();ctx.arc(x(p.t),y(p.h),2.5,0,Math.PI*2);ctx.fill();});
    ctx.fillStyle='#adc6a7';for(let i=0;i<=rows.length;i++)ctx.fillText('Y'+i,x(i)-8,207);

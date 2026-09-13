@@ -30,6 +30,7 @@ test('mine-plan controls use real Python, retain learning, and gate pump actions
   assert.equal(plotted.length,121);
   assert.equal(rows.length,121);
   assert.equal(el('level-chart').querySelectorAll('[data-series]').length,3);
+  for(const key of ['floor','target']){const path=el('level-chart').querySelector(`[data-series="${key}"]`).getAttribute('d');assert.equal((path.match(/H/g)||[]).length,10);assert.equal((path.match(/V/g)||[]).length,10);assert.ok(!path.includes('L'));}
   assert.equal(w.document.querySelector('.setup').open,false);
   const numerical=await (await fetch(base+'/api/plan/evaluate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bore_count:10,floors:Array.from({length:10},(_,i)=>-375-8*i),rates:Array.from({length:10},()=>Array(10).fill(500))})})).json();
   assert.deepEqual(plotted,numerical.timeline.map(t=>t.head));

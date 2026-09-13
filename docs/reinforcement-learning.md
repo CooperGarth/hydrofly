@@ -4,13 +4,13 @@ Version 0.3 adds real tabular Q-learning after the conventional physics and opti
 
 ## Environment
 
-A plan contains 4–16 fixed bore locations on the Super Pit-inspired perimeter, 1–10 editable year-end floor elevations and an initial floor and one rate per bore per year. The floor footprint is fixed; its target elevation progresses linearly between the initial and year-end floors. Rates are piecewise constant on 365-day intervals. The timflow response to an annual pulse is its step response at the elapsed start lag minus its step response at the elapsed end lag. No analytical well equation is implemented here. Earlier pumping therefore affects later years, including recovery when a bore is reduced or stopped.
+A plan contains 4–16 fixed bore locations on the Super Pit-inspired perimeter, 1–10 editable year-end floor elevations and an initial floor and one rate per bore per year. The floor footprint is fixed; its target elevation holds constant and steps down at each year-end bench date. Rates are piecewise constant on 365-day intervals. The timflow response to an annual pulse is its step response at the elapsed start lag minus its step response at the elapsed end lag. No analytical well equation is implemented here. Earlier pumping therefore affects later years, including recovery when a bore is reduced or stopped.
 
 Targets are evaluated at day 0 and each 365/12-day monthly sample across the complete horizon, up to day 3650. A year-end observation precedes the next year's rate step. Full-plan preview shows the final 25×25 mesh; progressive simulation returns a separate model-derived mesh for each month, starting with the uniform initial head at day 0. The graph tracks the highest head across 25 pit controls. Sample compliance does not establish safety between checkpoints. Aquifer head must remain above the −900 m AHD roof at bore and pit samples. The detailed geologic cutaway does not change the homogeneous confined hydraulic model.
 
 ## Objective and reward
 
-Let q be the annual rate matrix, N its number of entries, C the per-bore capacity, h the monthly pit head matrix, H the monthly target (interpolated floor minus 5), and D = max(initial head − H, 1 m).
+Let q be the annual rate matrix, N its number of entries, C the per-bore capacity, h the monthly pit head matrix, H the monthly target (stepped floor minus 5), and D = max(initial head − H, 1 m).
 
 - p = sum(q)/(N C): normalised pumping; physical volume = 365 sum(q), in m³.
 - a = count(q > 0)/N: active bore-year fraction, not number of distinct installed bores.
@@ -64,3 +64,5 @@ The default plan lasts 3650 days. The user can edit initial floor, year-end benc
 All three objectives and Q-learning assess the entire monthly ten-year trajectory for each candidate rate schedule. Annual rate periods remain editable schedule inputs; they are not separate simulations. The small tabular agent is experimental: increasing the horizon to 160 bore-year decisions does not establish learning convergence or optimality. The conventional LP provides a whole-plan benchmark. Portable Q-tables are capped at 200 states to bound JSON payloads with up to 321 actions.
 
 Lower K creates greater late-time drawdown in the default experiment, but the monthly tests also show delayed early drawdown at distant controls. No graphical multiplier is used.
+
+Bench schedule update: the initial floor applies from day 0 until just before day 365. The first entered floor applies at day 365, the second at day 730, and so on; the final entry applies at day 3650. Both chart displays and the model target use these right-continuous steps. Pumping history and modelled head remain continuous across the bench change; feasibility uses the new target at the change instant. Changing this schedule alters optimisation constraints, so retrain existing policies.

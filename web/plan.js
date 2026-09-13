@@ -32,14 +32,14 @@ function levelChart(r){if(r.axis){const edge=r.surface?[...r.surface[0],...r.sur
  add('text',{x:8,y:14,fill:'#556b5a','font-size':10},'m AHD');
  for(let i=0;i<=years.length;i++)add('text',{x:x(i),y:219,'text-anchor':'middle',fill:'#556b5a','font-size':11},`${i} yr`);
  for(const [key,color,dash]of [['floor','#775c45',''],['target','#a65036','6 4']]){
-  const path=`M${x(0)},${y(r.initial_floor-(key==='target'?5:0))} `+years.map((v,i)=>`L${x(i+1)},${y(v[key])}`).join(' ');
+  const path=`M${x(0)},${y(r.initial_floor-(key==='target'?5:0))} `+years.map((v,i)=>`H${x(i+1)}V${y(v[key])}`).join(' ');
   add('path',{d:path,fill:'none',stroke:color,'stroke-width':2,'stroke-dasharray':dash,'data-series':key});
  }
  add('polyline',{points:points.map(p=>`${x(p.time)},${y(p.head)}`).join(' '),fill:'none',stroke:'#187c87','stroke-width':2.5,'data-series':'head'});
  for(const p of points){const dot=add('circle',{cx:x(p.time),cy:y(p.head),r:4,fill:p.head>p.target+1e-5?'#ba5839':'#187c87','data-head':p.head});const title=document.createElementNS(ns,'title');title.textContent=`Year ${p.time}: head ${p.head.toFixed(2)}, floor ${p.floor}, target ${p.target} m AHD`;dot.append(title);}
  $('level-values').innerHTML=points.map(p=>`<tr><td>${p.time}</td><td>${p.head.toFixed(2)}</td><td>${p.floor}</td><td>${p.target}</td></tr>`).join('');
  $('level-compliance').textContent=!r.confined_valid?'Outside model assumptions':r.feasible?'All sampled targets met':'Target exceedance';
- $('graph-caption').textContent='Highest modelled head across 25 pit controls · monthly samples from day 0 · orange points exceed target. Floor progresses between editable year-end elevations; head lines are guides.';
+ $('graph-caption').textContent='Highest modelled head across 25 pit controls · monthly samples from day 0 · orange points exceed target. Floor holds level, then steps down at each year-end date; the target follows 5 m below. Head lines are guides.';
 }
 
 function display(r){playback=null;$('simulate').textContent='Run full simulation';levelChart(r);$('objective-summary').textContent=`${r.objective} score: ${r.score.toFixed(3)} · synthetic operating cost A$${Math.round(r.operating_cost_aud).toLocaleString()} · K ${r.conductivity} m/day · T ${r.transmissivity} m²/day`;last=r;plan.rates=r.rates.map(q=>[...q]);plan.active_year=r.active_year;editors();if(busy)lock(true);const year=r.years[r.active_year];$('worst-head').textContent=year.worst_head.toFixed(2);$('target-label').textContent=`target ≤ ${year.target} m AHD`;$('total-rate').textContent=Math.round(year.total_rate).toLocaleString();$('plan-volume').textContent=(r.total_volume/1e6).toFixed(3);$('active-bores').textContent=`${year.active_bores} / ${plan.bore_count}`;$('feasibility').textContent=!r.confined_valid?'Outside confined assumption':r.feasible?'ALL YEARS PASS':'TARGET NOT MET';$('feasibility').style.color=r.feasible&&r.confined_valid?'#b9e5bc':'#e5b080';$('mine-year').textContent='FULL PLAN PREVIEW';$('mesh-label').textContent=`Day ${r.duration_days} / run simulation to watch progression`;

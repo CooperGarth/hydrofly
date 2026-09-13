@@ -26,7 +26,15 @@ def test_day_zero_and_batch_boundary_do_not_reset_pumping_history():
     assert a[-1]==b
     assert b['head']==pytest.approx(numerical(p)[12,:25].max())
     assert b['head']<-365
-    assert floor_at(p,182.5)==-362.5
+    assert floor_at(p,182.5)==-350
+    assert floor_at(p,365-1e-6)==-350
+    assert floor_at(p,365)==-375
+    assert floor_at(p,365+1e-6)==-375
+    assert floor_at(p,730)==-390
+    from hydrofly.mine_plan import target_heads
+    target=target_heads(p)
+    assert target[10]==-355 and target[11]==-380
+    assert target[22]==-380 and target[23]==-395
 
 def test_impossible_initial_clearance_is_not_declared_feasible():
     p=MinePlan(initial_floor=-370)
