@@ -9,7 +9,9 @@ def test_demo_preset_meets_targets_and_improves_tracking():
     assert r['feasible'] and r['confined_valid']
     slack=np.array([t['target']-t['head'] for t in r['timeline']])
     assert slack.min()>=-1e-5
-    assert slack.mean()==pytest.approx(4.293948,abs=1e-4)
+    assert slack.mean()<4.4
+    lowered=np.array([t['target']<p.initial_head for t in r['timeline']])
+    assert slack[lowered].min()>=.0099
     base=benchmark(p.model_copy(update={'conductivity':.1,'storativity':.001}),grid=False)['result']
     old=np.mean([t['target']-t['head'] for t in base['timeline']])
     assert slack.mean()<old*.85

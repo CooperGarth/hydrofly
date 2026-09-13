@@ -32,7 +32,7 @@ Super Pit-inspired reference shell: 3.78 × 1.61 km, 750 m deep, based on a date
 
 The version 0.2 single-year laboratory remains at `/classic.html`. Its independently verified single-well, superposition, recovery and conventional optimisation tests remain in the suite. Version 0.3 additionally tests annual-history response against directly scheduled timflow wells and actual Q-learning updates. The Python/API suite and four JavaScript tests validate the implementation locally, including actual UI handlers against the Python HTTP server (with only the renderer stubbed). Training can continue across batches. The production build passes; interactive rendered-browser QA, Codespaces launch and hosted Docker validation remain outstanding in this environment.
 
-Repository: [CooperGarth/hydrofly](https://github.com/CooperGarth/hydrofly), currently private. The public Python application is not yet deployed. `render.yaml` provides a Docker hosting blueprint; deployment requires a hosting account and approval of its compute charges.
+Repository: [CooperGarth/hydrofly](https://github.com/CooperGarth/hydrofly), currently private. The interactive Python application is live at [hydrofly.vercel.app](https://hydrofly.vercel.app/). `render.yaml` provides a Docker hosting blueprint; deployment requires a hosting account and approval of its compute charges.
 
 ![Measured learning and groundwater response](artifacts/learning-diagnostic.png)
 

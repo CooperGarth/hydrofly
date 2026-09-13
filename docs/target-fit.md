@@ -11,3 +11,7 @@ The default pumping schedule in `preset.py` and the browser is the selected LP r
 An instantaneous mine-floor drop cannot be followed exactly by continuous transient groundwater head. Annual constant-rate periods require lowering head before a bench change, particularly the first 25 m step. We have not fabricated a head line or changed bench depths to hide that mismatch. Finer pumping control is a possible later experiment; monthly sampled compliance does not prove continuous safety.
 
 The default preset is conventional optimisation, not proof that Q-learning has learned this schedule. Existing historic diagnostic evidence does not describe the new initial head or defaults. Tests independently recompute feasibility/tracking, verify initial-head translation and agent consistency, and reject an infeasible day-zero target.
+
+## Hosted-runtime preset buffer
+
+Live verification of https://hydrofly.vercel.app/ found that the original native-fitted preset missed six lowered targets by less than 0.001 m on the hosted runtime (largest observed miss 0.0007823 m). A fresh fit on Vercel passed all 121 samples. The shipped preset is now generated with 0.01 m additional clearance at lowered targets and the aquifer roof; the initial flat target retains the existing tiny numerical margin. This is a numerical robustness allowance, not an engineering safety factor. The compliance tolerance and ordinary benchmark objective remain unchanged. Historical search values above precede this preset-only buffer.

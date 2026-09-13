@@ -137,12 +137,13 @@ def evaluate_plan(plan,grid=True):
     if grid:result['surface']=h[index,25+plan.bore_count:].reshape(len(view_grid(plan.view_extent)[0]),-1).tolist()
     return result
 
-def benchmark(plan,grid=True):
+def benchmark(plan,grid=True,numerical_margin=1e-5):
     if plan.aquifer().initial_head>plan.initial_floor-5:return {'success':False,'message':'The day-zero target is already missed before pumping starts. Raise the initial floor or provide a separate pre-dewatering model.'}
     a=design_matrix(plan);n=plan.bore_count*len(plan.floors)
     controls=a[:,:25,:].reshape(-1,n)
     target=target_heads(plan)
-    required=np.repeat(plan.initial_head-target+1e-5,25)
+    margin=np.where(plan.initial_head>target,numerical_margin,1e-5)
+    required=np.repeat(plan.initial_head-target+margin,25)
     # Confined validity at all modelled pit/well monthly samples.
     limits=a.reshape(-1,n)
     coefficients=np.ones(n)
@@ -152,7 +153,7 @@ def benchmark(plan,grid=True):
         scale=np.maximum(plan.initial_head-target,1)
         coefficients=(a[:,:25,:]/scale[:,None,None]).sum(axis=(0,1))
     result=linprog(coefficients,A_ub=np.vstack((-controls,limits)),
-       b_ub=np.r_[-required,np.full(len(limits),plan.initial_head-plan.aquifer().roof-1e-5)],bounds=[(0,plan.capacity)]*n,method='highs')
+       b_ub=np.r_[-required,np.full(len(limits),plan.initial_head-plan.aquifer().roof-numerical_margin)],bounds=[(0,plan.capacity)]*n,method='highs')
     if not result.success:return {'success':False,'message':'No feasible monthly plan within these capacities and confined assumptions.'}
     updated=plan.model_copy(update={'rates':result.x.reshape(-1,plan.bore_count).tolist()})
     return {'success':True,'result':evaluate_plan(updated,grid=grid),'message':f'Minimum {plan.objective} benchmark under monthly targets; active-bore count is not explicitly minimised.'}

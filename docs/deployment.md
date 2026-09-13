@@ -1,3 +1,5 @@
+> Live application: [hydrofly.vercel.app](https://hydrofly.vercel.app/). Browser checks confirmed the Python model, fitting, simulation and training on 13 September 2026.
+
 # Run and publish
 
 ## Local reproducible run
