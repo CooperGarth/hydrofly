@@ -77,3 +77,5 @@ First complete browser QA and public hosting. Then introduce a history-aware con
 ### Vercel
 
 Import this repository with the **FastAPI** preset and the root directory left at `./`. See [Vercel setup and acceptance checks](docs/deployment.md#vercel-import-prepared-deployment-not-yet-verified). Configuration is prepared; a public deployment has not yet been verified.
+
+The main console now prioritises the mine scene, fly controller monitor and a quarterly water-level versus bench-progression graph. Mine-plan and strategy settings are collapsed initially. The graph shows Python-calculated pit heads, annual floor elevations and the five metre clearance target; it updates during training and learned-policy operation.

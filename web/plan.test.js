@@ -25,6 +25,15 @@ test('mine-plan controls use real Python, retain learning, and gate pump actions
   await w.eval(`(async()=>{${source}\n})()`);
   const el=id=>w.document.getElementById(id);
   assert.match(el('activity').textContent,/Plan evaluated/);
+  const plotted=[...el('level-chart').querySelectorAll('[data-head]')].map(e=>Number(e.dataset.head));
+  const rows=[...el('level-values').querySelectorAll('tr')];
+  assert.equal(plotted.length,12);
+  assert.equal(rows.length,12);
+  assert.equal(el('level-chart').querySelectorAll('[data-series]').length,3);
+  assert.equal(w.document.querySelector('.setup').open,false);
+  const numerical=await (await fetch(base+'/api/plan/evaluate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bore_count:10,floors:[-375,-382,-390],rates:Array.from({length:3},()=>Array(10).fill(500))})})).json();
+  assert.deepEqual(plotted,numerical.years.flatMap(y=>y.quarter_heads));
+
   el('bore-count').value='4';
   const before=requests.length;await el('train').onclick();
   assert.equal(requests.length,before);assert.match(el('activity').textContent,/Create \/ resize/);
