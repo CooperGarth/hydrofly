@@ -1,0 +1,9 @@
+{
+  "name": "HydroFly laboratory",
+  "image": "mcr.microsoft.com/devcontainers/python:1-3.12-bookworm",
+  "features": {"ghcr.io/devcontainers/features/node:1": {"version": "22"}},
+  "forwardPorts": [8000],
+  "portsAttributes": {"8000": {"label": "HydroFly interface", "onAutoForward": "openBrowser", "protocol": "http"}},
+  "postCreateCommand": "bash scripts/setup-codespace.sh",
+  "postStartCommand": "bash scripts/start-codespace.sh"
+}

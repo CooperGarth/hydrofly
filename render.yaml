@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: hydrofly
+    runtime: docker
+    plan: 1c-2g
+    healthCheckPath: /api/health
+    envVars:
+      - key: PORT
+        value: '8000'

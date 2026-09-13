@@ -15,6 +15,7 @@ jobs:
       - run: pip install --no-deps -e .
       - run: pytest -q --junitxml=artifacts/tests.xml
       - run: python scripts/diagnostics.py
+      - run: python scripts/learning_diagnostics.py
       - uses: actions/setup-node@v4
         with:
           node-version: '22'

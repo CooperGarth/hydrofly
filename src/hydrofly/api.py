@@ -21,7 +21,7 @@ async def lifespan(app):
     yield
 
 
-app=FastAPI(title="HydroFly",version="0.2.0",lifespan=lifespan)
+app=FastAPI(title="HydroFly",version="0.3.0",lifespan=lifespan)
 
 
 class Scenario(BaseModel):
@@ -98,6 +98,39 @@ def fly_act(s:FlyRequest):
         return {**action,'result':{**result,**objective(q,result['control_heads'],aq,level),
                                   'iteration':action['state']['moves']}}
     return run_job(compute)
+
+
+from hydrofly.mine_plan import MinePlan, evaluate_plan, benchmark
+from hydrofly.learning import LearningStart, LearnRequest, new_session, get_agent
+
+@app.post("/api/plan/evaluate")
+def plan_evaluate(p:MinePlan):return run_job(lambda:evaluate_plan(p))
+
+@app.post("/api/plan/benchmark")
+def plan_benchmark(p:MinePlan):return run_job(lambda:benchmark(p))
+
+@app.post("/api/learn/start")
+def learn_start(p:LearningStart):return run_job(lambda:new_session(p))
+
+@app.post("/api/learn/episode")
+def learn_episode(p:LearnRequest):return run_job(lambda:get_agent(p.session).episode())
+
+@app.post("/api/learn/run")
+def learn_run(p:LearnRequest):return run_job(lambda:get_agent(p.session).start_run())
+
+@app.post("/api/learn/decide")
+def learn_decide(p:LearnRequest):return run_job(lambda:get_agent(p.session).decision())
+
+@app.post("/api/learn/act")
+def learn_act(p:LearnRequest):return run_job(lambda:get_agent(p.session).act())
+
+@app.post("/api/learn/export")
+def learn_export(p:LearnRequest):
+    def export():
+        a=get_agent(p.session)
+        return {'algorithm':'Q-learning','signature':a.signature,'request':a.request.model_dump(),
+                'history':a.history,'q_table':{k:v.tolist() for k,v in a.q.items()},'episodes':a.episodes,'updates':a.updates}
+    return run_job(export)
 
 
 web=Path(os.getenv("HYDROFLY_WEB",Path(__file__).resolve().parents[2]/"dist"))

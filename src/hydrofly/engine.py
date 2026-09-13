@@ -80,13 +80,15 @@ LEVELS={level.name:level for level in (CLASSIC,SUPERPIT)}
 _lock = RLock()
 
 
-def build_model(aquifer=Aquifer(), wells=WELLS, schedules=None, well_radius=0.15):
+def build_model(aquifer=Aquifer(), wells=WELLS, schedules=None, well_radius=0.15, tmax=TMAX):
     """Construct actual interacting timflow elements. Schedules are absolute Q.
 
     Each well schedule is [(start_day, extraction_m3_per_day), ...].
     Multiple aquifers/boundary elements can later be introduced in this factory
     without changing the renderer or agent protocol.
     """
+    if not np.isfinite(tmax) or not TMIN < tmax <= 1825:
+        raise ValueError("Model horizon must be positive and no longer than five years")
     wells = np.asarray(wells, dtype=float)
     if not np.isfinite(well_radius) or well_radius <= 0:
         raise ValueError("Well radius must be positive and finite")
@@ -99,12 +101,12 @@ def build_model(aquifer=Aquifer(), wells=WELLS, schedules=None, well_radius=0.15
     model = tft.ModelMaq(kaq=aquifer.conductivity,
                          z=[aquifer.roof, aquifer.roof - aquifer.thickness],
                          Saq=aquifer.storativity / aquifer.thickness,
-                         topboundary="conf", tmin=TMIN, tmax=TMAX, M=15)
+                         topboundary="conf", tmin=TMIN, tmax=tmax, M=15)
     for i, ((x, y), schedule) in enumerate(zip(wells, schedules)):
         steps = np.asarray(schedule, dtype=float)
         if steps.ndim != 2 or steps.shape[1] != 2 or len(steps) == 0:
             raise ValueError("Schedules must contain (day, rate) pairs")
-        if not np.isfinite(steps).all() or (steps < 0).any() or (steps[:, 0] > TMAX).any():
+        if not np.isfinite(steps).all() or (steps < 0).any() or (steps[:, 0] > tmax).any():
             raise ValueError("Schedule times/rates must be finite and nonnegative")
         if steps[0, 0] != 0 or (np.diff(steps[:, 0]) <= 0).any():
             raise ValueError("Schedules start at day zero and increase strictly")
@@ -119,8 +121,8 @@ def heads(model, points, times, aquifer=Aquifer()):
     points, times = np.asarray(points, float), np.atleast_1d(times).astype(float)
     if points.ndim != 2 or points.shape[1] != 2 or not np.isfinite(points).all():
         raise ValueError("Points must be finite (n,2)")
-    if not np.isfinite(times).all() or (times < TMIN).any() or (times > TMAX).any():
-        raise ValueError(f"Evaluation days must be in [{TMIN}, {TMAX}]")
+    if not np.isfinite(times).all() or (times < TMIN).any() or (times > model.tmax).any():
+        raise ValueError(f"Evaluation days must be in [{TMIN}, {model.tmax}]")
     # Check tmin after every forcing change, including exact change times.
     for element in model.elementlist:
         if hasattr(element, "tstart"):

@@ -23,3 +23,7 @@ Three.js receives numerical elevations. Contours intersect the same model-derive
 The conventional benchmark remains separate. `fly.decide` can later be replaced by another policy that returns the same action/state contract. No renderer or groundwater equations need to change. RL is not installed; a physical-time RL environment would additionally need pumping history and a time-aware reward specification.
 
 The first release exposes one aquifer layer. The selected engine is not limited to that: a future layered scenario can replace the model factory and return one array per layer. Add independent validation before exposing such arrays to the UI.
+
+## Version 0.3 mine planning and learning
+
+`mine_plan.py` supplies validated annual schedules, timflow pulse-response matrices, quarterly evaluation and a constrained volume benchmark. `learning.py` implements the bounded in-memory Q-learning sessions and frozen evaluation controller. `/api/plan/*` and `/api/learn/*` bridge those modules to `web/plan.js`. `web/mine-scene.js` draws the cutaway and model-derived year-end head surface. The main route uses this interface; `classic.html` retains the previous one. See [RL semantics](reinforcement-learning.md).

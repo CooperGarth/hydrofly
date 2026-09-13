@@ -6,36 +6,31 @@ HydroFly is an intentionally unnecessary experiment combining analytical groundw
 
 **Experimental and educational only. This is not a real mine-dewatering design tool.** The deliberately synthetic problem reduces confined-aquifer pressure beneath a pit footprint. It does not simulate pit seepage, slope stability or a moving water table.
 
-## Current status
+## Open the interface
 
-The first milestone is complete: a scientifically checked Python transient model with ten controllable wells and reproducible 2-D plots. A manual/optimiser/HydroFly web frontend, Python API and deployment package are also implemented.
+The main interface now includes an editable multi-year mine plan, 4–16 bores, annual rate inputs, an orbitable geological cutaway, an animated fly at a control computer and real reinforcement-learning telemetry.
 
-- Engine: **timflow.transient 0.5.0**, the actively developed successor to TTim.
-- Independent verification: AnaFlow's Theis solution, finite-radius convergence, multi-well superposition, pumping shut-off and recovery.
-- Optimiser: SciPy SLSQP with hard pit-head constraints and a HiGHS feasibility check.
-- Display: Three.js head mesh and contours derived from actual Python results, pit terraces, pumping indicators and an animated fly.
-- Repository: [CooperGarth/hydrofly](https://github.com/CooperGarth/hydrofly). It is currently private. The interactive Python application is not yet publicly deployed; no compatible Python hosting deployment connection is configured.
-- Frontend production build, 23 Python/API tests, three JavaScript controller tests and a real HTTP smoke check passed locally. Interactive browser/rendering QA is outstanding: the session's cloud browser could not open its local Python server. Docker build is also outstanding because no Docker executable was available. CI is provided but has not run on GitHub.
+**Run it in GitHub Codespaces:** open this repository, choose **Code → Codespaces → Create codespace on main**. The included dev-container installs Python and frontend dependencies, builds the interface and starts port 8000. Open the **HydroFly interface** forwarded port. This launch path is configured but has not yet been exercised in Codespaces; Codespaces usage is subject to your GitHub allowance and billing settings. It is a development workspace, not a public production demonstration.
 
-![Independent verification and ten-well head contours](artifacts/diagnostic.png)
+1. Create/resize the borefield and set annual pit floors and rates.
+2. Evaluate the plan; select a year to inspect its head surface and bore rates.
+3. Choose a teaching strategy and train the fly. The reward plot, Q updates, exploration and target-success history are measured live.
+4. Run the learned policy with guidance and exploration disabled. The fly operates one bore-year lever at a time. Compare it against the minimum-volume benchmark.
+5. Export the plan and Q-learning record.
 
-## The experiment
+The detailed [learning specification](docs/reinforcement-learning.md) defines every reward, update, constraint and limitation. The [interface reference record](docs/interface-references.md) documents the Awesome Fly inspiration and geology.
 
-The default game level uses a **Super Pit-inspired planned shell: 3.78 × 1.61 km, 750 m deep**, based on a dated 2022 closure study. Mine-life context is **2034+**, not a fixed shutdown date. [Sources and distinctions](docs/super-pit.md).
+## Scientific scope and status
 
-The hydraulic system is deliberately synthetic: initial head −365 m AHD, pit floor −390 m AHD, target −395 m AHD, K=0.2 m/day, b=200 m, T=40 m²/day, S=0.001, ten wells capped at 6,000 m³/day, assessment after 365 days. The model represents an already partly dewatered confined pressure-head challenge, not the real mine's water table or fractured-rock system.
+**Experimental and educational only. Not a real mine-dewatering design tool.** timflow.transient 0.5.0 remains the production groundwater engine. All displayed head vertices come from Python. Annual rate steps retain pumping history and recovery; quarterly pit controls use each year's floor minus 5 m. A year-end pressure-head mesh is not a water table or evidence of continuous compliance.
 
-The default greedy fly reaches the sampled target in 13 moves using **5,343.75 m³/day**; the conventional benchmark uses approximately **5,128.93 m³/day**. The fly's single-well strategy stops locally and does not guarantee a global optimum. A Classic laboratory level retains the original independently verified 80 m-floor example.
+Super Pit-inspired reference shell: 3.78 × 1.61 km, 750 m deep, based on a dated 2022 closure study. Mine-life reference: 2034+. [Sources](docs/super-pit.md). Rock groups are illustrative and do not constitute a site-calibrated heterogeneous groundwater model. Default synthetic K=0.2 m/day, b=200 m, S=0.001, initial head −365 m AHD, aquifer roof −900 m AHD.
 
-## Operating modes
+The version 0.2 single-year laboratory remains at `/classic.html`. Its independently verified single-well, superposition, recovery and conventional optimisation tests remain in the suite. Version 0.3 additionally tests annual-history response against directly scheduled timflow wells and actual Q-learning updates. The production build and Python/API checks run locally; interactive rendered-browser QA, Codespaces launch and hosted Docker validation remain outstanding in this environment.
 
-1. **Manual:** adjust well rates; Python evaluates the constant-rate scenario.
-2. **Optimiser:** conventional SLSQP/HiGHS benchmark with hard pit constraints.
-3. **HydroFly:** enter a strategy; the fly decides, travels to a well, changes that pump, checks the Python response and decides again. Pause/resume and one-move controls are included. No precomputed optimiser replay and no RL.
+Repository: [CooperGarth/hydrofly](https://github.com/CooperGarth/hydrofly), currently private. The public Python application is not yet deployed. `render.yaml` provides a Docker hosting blueprint; deployment requires a hosting account and approval of its compute charges.
 
-Strategies support greedy deficit reduction, a custom well patrol order, and protecting the wettest control, with editable step size, minimum step, trimming and move budget. [Strategy contract](docs/fly-strategy.md). The JSON editor accepts this bounded configuration; it does not execute arbitrary code or interpret natural-language programmes.
-
-Each move changes a candidate constant-rate design at the chosen duration. Flight time and move count are not elapsed groundwater time. General pumping histories remain available in the Python engine and are covered by recovery tests.
+![Measured learning and groundwater response](artifacts/learning-diagnostic.png)
 
 ## Run
 
@@ -73,8 +68,8 @@ The [engine decision](docs/engine-decision.md) compares timflow, TTim, TimML and
 - [Package research and decision](docs/engine-decision.md)
 - [Deployment instructions](docs/deployment.md)
 
-Generate evidence with `python scripts/diagnostics.py`. CI runs numerical tests, diagnostics, the frontend build and a container build. Source is licensed under [MIT](LICENSE). timflow, AnaFlow and other dependencies retain their own licences. Contributions should add evidence and tests before expanding the visual or hydrogeological claims.
+Generate evidence with `python scripts/diagnostics.py` and `python scripts/learning_diagnostics.py`. CI runs numerical tests, diagnostics, the frontend build and a container build. Source is licensed under [MIT](LICENSE). timflow, AnaFlow and other dependencies retain their own licences. Contributions should add evidence and tests before expanding the visual or hydrogeological claims.
 
 ## Next experiment
 
-First complete browser QA and public hosting. Then introduce a history-aware controller with a pre-dewatering and operating phase, additional aquifer layers/boundaries, and environmental receptors. Only after a validated conventional baseline should reinforcement learning replace the agent policy.
+First complete browser QA and public hosting. Then introduce a history-aware controller with a pre-dewatering and operating phase, additional aquifer layers/boundaries, and environmental receptors. The Q-learning experiment now sits alongside that baseline; broader generalisation and biological connectome experiments remain future work.
