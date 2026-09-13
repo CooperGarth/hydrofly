@@ -49,7 +49,7 @@ class Agent:
 
     def values(self,q):
         key=self.state(q)
-        if key not in self.q and len(self.q)<2000:self.q[key]=np.zeros(self.actions)
+        if key not in self.q and len(self.q)<getattr(self,"max_states",2000):self.q[key]=np.zeros(self.actions)
         return key,self.q.get(key,np.zeros(self.actions))
 
     def admissible(self,q):

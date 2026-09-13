@@ -133,5 +133,11 @@ def learn_export(p:LearnRequest):
     return run_job(export)
 
 
+from hydrofly.portable import PortableRequest, handle as portable_handle
+
+@app.post("/api/portable/learn")
+def portable_learning(p:PortableRequest):return run_job(lambda:portable_handle(p))
+
+
 web=Path(os.getenv("HYDROFLY_WEB",Path(__file__).resolve().parents[2]/"dist"))
 if web.exists():app.mount("/",StaticFiles(directory=web,html=True),name="web")

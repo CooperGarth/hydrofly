@@ -18,7 +18,7 @@ test('mine-plan controls use real Python, retain learning, and gate pump actions
   assert.ok(ready,logs);
   dom=new JSDOM(await readFile(new URL('./index.html',import.meta.url),'utf8'),{url:base,runScripts:'outside-only',pretendToBeVisual:true});
   const w=dom.window,requests=[];let permitArrival=true,arrivalCalls=0;
-  w.fetch=(path,options)=>{requests.push(path);return fetch(new URL(path,base),options);};
+  w.fetch=(path,options)=>{requests.push(path==='/api/portable/learn'?path+'/'+JSON.parse(options.body).operation:path);return fetch(new URL(path,base),options);};
   w.structuredClone=structuredClone;w.matchMedia=()=>({matches:true});
   w.createMineScene=()=>({update(){},setActivity(){},focusFly(){},resetCamera(){},toggleSection(){},toggleSurface(){},operate:async()=>{arrivalCalls++;return permitArrival;}});
   const source=(await readFile(new URL('./plan.js',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'');
@@ -36,12 +36,12 @@ test('mine-plan controls use real Python, retain learning, and gate pump actions
   assert.equal(el('episode-number').textContent,'1');assert.ok(Number(el('updates').textContent)>0);
   await el('train').onclick();
   assert.equal(el('episode-number').textContent,'2');
-  assert.equal(requests.filter(p=>p==='/api/learn/start').length,1);
+  assert.equal(requests.filter(p=>p==='/api/portable/learn/start').length,1);
   permitArrival=false;
-  const acts=requests.filter(p=>p==='/api/learn/act').length;
+  const acts=requests.filter(p=>p==='/api/portable/learn/act').length;
   await el('run-learned').onclick();
   assert.ok(arrivalCalls>0,'Cancellation test must reach an actual proposed action');
-  assert.equal(requests.filter(p=>p==='/api/learn/act').length,acts);
+  assert.equal(requests.filter(p=>p==='/api/portable/learn/act').length,acts);
   // Editing a bore invalidates this plan's policy and clears learning telemetry.
   const bore=el('bore-0');bore.value='250';bore.onchange();
   assert.equal(el('episode-number').textContent,'0');

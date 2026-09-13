@@ -31,13 +31,7 @@ Health check: `GET /api/health` after startup. Validate the public URL, evaluate
 
 ## GitHub
 
-The local repository has a research-first commit history and an MIT licence. To publish under your GitHub account with GitHub CLI from an authenticated environment:
-
-```sh
-gh repo create HydroFly --public --source=. --remote=origin --push
-```
-
-This command is an instruction, not a claim that a remote repository already exists. Alternatively create an empty public repository, add its remote and push `main`. GitHub Actions will run numerical checks and build the frontend/container. The Actions workflow does not claim to deploy to an unconfigured hosting account. Add the actual demo URL to the README only after deployment and public verification.
+The project is hosted at https://github.com/CooperGarth/hydrofly. Import this existing repository into your hosting account. GitHub Actions tests and builds the project; it does not deploy to an unconfigured hosting account. Add the public demo URL only after verifying deployment.
 
 GitHub Pages alone is unsuitable for the unmodified selected dependency graph. See [the execution decision](deployment-decision.md). A future proven Pyodide port could enable Pages without changing the physics requirement.
 
@@ -45,4 +39,20 @@ GitHub Pages alone is unsuitable for the unmodified selected dependency graph. S
 
 `.devcontainer/devcontainer.json` installs Python 3.12 and Node 22, runs `scripts/setup-codespace.sh`, and starts the API with `scripts/start-codespace.sh`. Port 8000 is forwarded and labelled HydroFly interface. Create a Codespace on main and open that port when setup completes. A private repository's Codespace does not make a public demo. This configuration has not been launched here. See [GitHub's dev-container introduction](https://docs.github.com/en/codespaces/setting-up-your-project-for-codespaces/introduction-to-dev-containers).
 
-`render.yaml` selects a Docker web service with a 1c-2g compute plan and `/api/health` check. This is a paid deployment configuration, not an authorised purchase or completed deployment. Review the [Render blueprint reference](https://render.com/docs/blueprint-spec) and pricing in your hosting account before creating it. Use one API worker: learning sessions are in memory, bounded to eight sessions, and lost on restart. Export experiments before stopping the service.
+`render.yaml` selects a Docker web service with a 1c-2g compute plan and `/api/health` check. This is a paid deployment configuration, not an authorised purchase or completed deployment. Review the [Render blueprint reference](https://render.com/docs/blueprint-spec) and pricing in your hosting account before creating it. The main mine-plan UI carries validated learning checkpoints between requests; legacy classic learning endpoints still use process memory. Export experiments before closing the page.
+
+## Vercel import (prepared, deployment not yet verified)
+
+1. In Vercel, choose **Add New → Project**, then import `CooperGarth/hydrofly`, branch `main`.
+2. Keep **Root Directory** at the repository root (`./`), not `web`.
+3. Use the **FastAPI** framework preset. `vercel.json` builds the Vite frontend; `app.py` serves the Python API and built frontend. Leave output directory at the framework default.
+4. Add environment variable `VERCEL_SUPPORT_LARGE_FUNCTIONS=1` if your project needs explicit opt-in. Keep Fluid compute with Active CPU enabled. No model API key or database is needed.
+5. Deploy and check `/api/health`, then evaluate a mine plan, train two batches and run the learned strategy. Confirm episodes continue between batches and inspect the actual 3-D canvas before sharing the URL.
+
+Python 3.12 is pinned. Numba and Matplotlib write caches to `/tmp`. Startup warmup is disabled in the Vercel entrypoint; the first model request still performs compilation and can be slower. The function timeout is 300 seconds. Large functions support bundles up to 5 GB in public beta; new projects are eligible by default, subject to the documented compute requirements. A clean Linux installation of the locked runtime dependencies occupied approximately 499 MiB on disk before application/runtime overhead, so the standard 500 MB limit has insufficient margin. The actual Vercel bundle size, cold start, memory and routing remain deployment acceptance checks. This setup does not claim a successful hosted deployment.
+
+The main UI uses `/api/portable/learn`: every call carries the validated JSON plan, Q-table, episode history and exact RNG state. Training does not depend on requests reaching the same process. The table is bounded to 500 states and history to 100 episodes. RNG state is encoded as a string to preserve integers larger than JavaScript's exact numeric range. Checkpoints are visitor-controlled experiment data, not authenticated leaderboard evidence. Closing/reloading the page clears the current session; export your experiment first. No pickle or submitted code is executed.
+
+Local validation: 29 existing Python tests plus three portable-state tests pass; all four JavaScript tests pass against the real Python HTTP API with only WebGL rendering stubbed. This verifies transport and numerical continuity, not rendered browser appearance or Vercel execution.
+
+References checked 2026-09-13: [FastAPI deployment](https://vercel.com/docs/frameworks/backend/fastapi), [Python runtime](https://vercel.com/docs/functions/runtimes/python), [large functions and limits](https://vercel.com/docs/functions/limitations#large-functions-beta).

@@ -73,3 +73,7 @@ Generate evidence with `python scripts/diagnostics.py` and `python scripts/learn
 ## Next experiment
 
 First complete browser QA and public hosting. Then introduce a history-aware controller with a pre-dewatering and operating phase, additional aquifer layers/boundaries, and environmental receptors. The Q-learning experiment now sits alongside that baseline; broader generalisation and biological connectome experiments remain future work.
+
+### Vercel
+
+Import this repository with the **FastAPI** preset and the root directory left at `./`. See [Vercel setup and acceptance checks](docs/deployment.md#vercel-import-prepared-deployment-not-yet-verified). Configuration is prepared; a public deployment has not yet been verified.
