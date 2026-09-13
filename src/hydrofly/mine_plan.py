@@ -1,5 +1,6 @@
 """Piecewise annual pumping, evaluated by timflow with full prior-year memory."""
 from functools import lru_cache
+from typing import Literal
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from scipy.optimize import linprog
@@ -10,7 +11,8 @@ class MinePlan(BaseModel):
     bore_count:int=Field(default=10,ge=4,le=16)
     floors:list[float]=Field(default_factory=lambda:[-375,-382,-390],min_length=1,max_length=5)
     rates:list[list[float]]=Field(default_factory=lambda:[[500.]*10 for _ in range(3)])
-    conductivity:float=Field(default=.2,ge=.05,le=5)
+    objective:Literal['cost','rate','drawdown']='rate'
+    conductivity:float=Field(default=.1,ge=.05,le=5)
     thickness:float=Field(default=200,ge=100,le=400)
     storativity:float=Field(default=.001,ge=.0001,le=.01)
     capacity:float=Field(default=6000,ge=100,le=10000)
@@ -63,13 +65,23 @@ def numerical(plan,grid=False):
     a=design_matrix(plan,grid)
     return plan.aquifer().initial_head-a@np.array(plan.rates).ravel()
 
+def unit_costs(plan):
+    # Deliberately synthetic operating costs, AUD/m3; no site tariff claim.
+    return .04+.06*np.arange(plan.bore_count)/max(plan.bore_count-1,1)
+
+def objective_metric(plan,q,h):
+    q=np.asarray(q).reshape(-1,plan.bore_count)
+    if plan.objective=='rate':return float(q.sum()/(q.size*plan.capacity))
+    if plan.objective=='cost':return float((q*unit_costs(plan)).sum()/(len(plan.floors)*plan.capacity*unit_costs(plan).sum()))
+    targets=np.repeat(np.array(plan.floors)-5,4)[:,None]
+    return float(np.mean(np.maximum(targets-h[:,:25],0)/np.maximum(-365-targets,1)))
+
 def cost(plan,h=None):
     h=numerical(plan) if h is None else h
     targets=np.repeat(np.array(plan.floors)-5,4)
     scale=np.maximum(-365-targets,1)
     deficit=np.maximum(h[:,:25]-targets[:,None],0)/scale[:,None]
-    q=np.asarray(plan.rates)
-    return float(q.sum()/(q.size*plan.capacity)+10000*np.mean(deficit**2)+.03*np.count_nonzero(q)/q.size)
+    return float(objective_metric(plan,plan.rates,h)+10000*np.mean(deficit**2))
 
 def evaluate_plan(plan,grid=True):
     h=numerical(plan,grid);years=len(plan.floors);summaries=[]
@@ -84,6 +96,9 @@ def evaluate_plan(plan,grid=True):
       'feasible':all(y['feasible'] for y in summaries),'confined_valid':bool(h[:,:25+plan.bore_count].min()>-900),
       'wells':plan.wells().tolist(),'axis':AXIS.tolist(),'active_year':plan.active_year,
       'target':plan.floors[plan.active_year]-5,'floor':plan.floors[plan.active_year],
+      'objective':plan.objective,'objective_metric':objective_metric(plan,plan.rates,h),
+      'operating_cost_aud':float((np.asarray(plan.rates)*unit_costs(plan)).sum()*365),'unit_costs':unit_costs(plan).tolist(),
+      'conductivity':plan.conductivity,'transmissivity':plan.conductivity*plan.thickness,
       'engine':'timflow.transient 0.5.0','assessment':'Quarterly controls; displayed mesh is year end'}
     if grid:result['surface']=h[index,25+plan.bore_count:].reshape(25,25).tolist()
     return result
@@ -95,8 +110,14 @@ def benchmark(plan):
     required=np.repeat(-365-target+1e-5,25)
     # Confined validity at all modelled pit/well quarterly samples.
     limits=a.reshape(-1,n)
-    result=linprog(np.ones(n),A_ub=np.vstack((-controls,limits)),
+    coefficients=np.ones(n)
+    if plan.objective=='cost':coefficients=np.tile(unit_costs(plan),len(plan.floors))
+    elif plan.objective=='drawdown':
+        # With head <= target enforced, excess drawdown is a linear objective.
+        scale=np.maximum(-365-target,1)
+        coefficients=(a[:,:25,:]/scale[:,None,None]).sum(axis=(0,1))
+    result=linprog(coefficients,A_ub=np.vstack((-controls,limits)),
        b_ub=np.r_[-required,np.full(len(limits),535-1e-5)],bounds=[(0,plan.capacity)]*n,method='highs')
     if not result.success:return {'success':False,'message':'No feasible quarterly plan within these capacities and confined assumptions.'}
     updated=plan.model_copy(update={'rates':result.x.reshape(-1,plan.bore_count).tolist()})
-    return {'success':True,'result':evaluate_plan(updated),'message':'Minimum total volume benchmark; bore-count sparsity is not guaranteed.'}
+    return {'success':True,'result':evaluate_plan(updated),'message':f'Minimum {plan.objective} benchmark under quarterly targets; active-bore count is not explicitly minimised.'}

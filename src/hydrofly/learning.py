@@ -7,7 +7,7 @@ from collections import OrderedDict
 import hashlib,json,secrets
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field
-from hydrofly.mine_plan import MinePlan, design_matrix, evaluate_plan
+from hydrofly.mine_plan import MinePlan, design_matrix, evaluate_plan, objective_metric
 
 class LearningStart(BaseModel):
     model_config=ConfigDict(extra='forbid',allow_inf_nan=False)
@@ -38,7 +38,7 @@ class Agent:
         pumping=float(q.sum()/(self.n*self.plan.capacity))
         active=float(np.count_nonzero(q)/self.n)
         safe=bool(deficits.max()<1e-7 and h.min()>self.plan.aquifer().roof)
-        loss=float(np.mean(deficits**2)+.05*pumping+.015*active)
+        loss=float(np.mean(deficits**2)+.05*objective_metric(self.plan,q,h))
         return h,deficits,pumping,active,safe,loss
 
     def state(self,q):
@@ -80,7 +80,7 @@ class Agent:
 
     def transition(self,q,action):
         old=self.observe(q);trial=self.trial(q,action);new=self.observe(trial)
-        if action==2*self.n:return trial,(5-new[2]-.3*new[3] if new[4] else -3),True
+        if action==2*self.n:return trial,(5-objective_metric(self.plan,trial,new[0]) if new[4] else -3),True
         if new[0].min()<=-900:return q.copy(),-2.,False
         return trial,float(20*(old[5]-new[5])-.01),False
 
