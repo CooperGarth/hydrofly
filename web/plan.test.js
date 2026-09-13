@@ -53,7 +53,7 @@ test('mine-plan controls use real Python, retain learning, and gate pump actions
   assert.equal(el('level-values').querySelectorAll('tr').length,13);
   for(const input of el('bore-rows').querySelectorAll('input')){input.value='0';input.onchange();}
   el('episodes').value='1';await el('train').onclick();
-  assert.equal(el('episode-number').textContent,'1');assert.ok(Number(el('updates').textContent)>0);
+  assert.equal(el('episode-number').textContent,'1');assert.ok(Number(el('updates').textContent)>0);assert.equal(Number(el('neural-updates').textContent),Number(el('updates').textContent));assert.ok(el('exploration-meter').value>0);
   await el('train').onclick();
   assert.equal(el('episode-number').textContent,'2');
   assert.equal(requests.filter(p=>p==='/api/portable/learn/start').length,1);

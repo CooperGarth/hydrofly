@@ -5,8 +5,8 @@ import {createFlyConsole} from './fly-console.js';
 export function createMineScene(container){
  const scene=new THREE.Scene(),renderer=new THREE.WebGLRenderer({antialias:true,alpha:true});
  renderer.setPixelRatio(Math.min(devicePixelRatio,2));container.append(renderer.domElement);
- const camera=new THREE.PerspectiveCamera(36,1,1,30000);camera.position.set(4700,3200,6200);
- const orbit=new OrbitControls(camera,renderer.domElement);orbit.target.set(0,450,0);orbit.enableDamping=true;orbit.minDistance=1800;orbit.maxDistance=13000;orbit.maxPolarAngle=Math.PI*.85;
+ const camera=new THREE.PerspectiveCamera(36,1,1,150000);camera.position.set(4700,3200,6200);
+ const orbit=new OrbitControls(camera,renderer.domElement);orbit.target.set(0,450,0);orbit.enableDamping=true;orbit.minDistance=1800;orbit.maxDistance=90000;orbit.maxPolarAngle=Math.PI*.85;
  scene.add(new THREE.HemisphereLight(0xf2f4dc,0x293c47,2.7));const sun=new THREE.DirectionalLight(0xffdbab,3);sun.position.set(-3000,6000,4000);scene.add(sun);
  const consoleWorld=createFlyConsole(scene);
  const root=new THREE.Group();scene.add(root);let dynamic=new THREE.Group();root.add(dynamic);let headGroup=new THREE.Group();root.add(headGroup);let visible=true,section=false;

@@ -12,10 +12,11 @@ class MinePlan(BaseModel):
     floors:list[float]=Field(default_factory=lambda:[-375-8*i for i in range(10)],min_length=1,max_length=10)
     rates:list[list[float]]=Field(default_factory=lambda:[[500.]*10 for _ in range(10)])
     objective:Literal['cost','rate','drawdown']='rate'
-    conductivity:float=Field(default=.1,ge=.05,le=5)
+    conductivity:float=Field(default=.1,ge=.0001,le=5)
     thickness:float=Field(default=200,ge=100,le=400)
     storativity:float=Field(default=.001,ge=.0001,le=.01)
     capacity:float=Field(default=6000,ge=100,le=10000)
+    view_extent:float=Field(default=10000,ge=2600,le=20000)
     initial_floor:float=Field(default=-350,ge=-600,le=360)
     active_year:int=Field(default=0,ge=0,le=9)
 
@@ -35,15 +36,20 @@ class MinePlan(BaseModel):
         return np.column_stack((2140*np.cos(a),1055*np.sin(a)))
     def key(self):return (self.bore_count,len(self.floors),self.aquifer())
 
-AXIS=np.linspace(-2600,2600,25)
-_x,_y=np.meshgrid(AXIS,AXIS)
-GRID=np.column_stack((_x.ravel(),_y.ravel()))
+def view_grid(extent=10000):
+    # Keep the original central sampling and add outer points for regional context.
+    outer=np.linspace(2600,extent,6)[1:] if extent>2600 else np.array([])
+    axis=np.unique(np.r_[-outer[::-1],np.linspace(-2600,2600,25),outer])
+    x,y=np.meshgrid(axis,axis)
+    return axis,np.column_stack((x.ravel(),y.ravel()))
+
+AXIS,GRID=view_grid()
 
 @lru_cache(maxsize=3)
-def kernels(count,years,aq,grid=False):
+def kernels(count,years,aq,grid=False,extent=10000):
     angle=np.arange(count)*2*np.pi/count
     wells=np.column_stack((2140*np.cos(angle),1055*np.sin(angle)))
-    points=np.vstack((SUPERPIT.controls,wells,GRID)) if grid else np.vstack((SUPERPIT.controls,wells))
+    points=np.vstack((SUPERPIT.controls,wells,view_grid(extent)[1])) if grid else np.vstack((SUPERPIT.controls,wells))
     times=np.arange(1,years*12+1)*365/12
     result=[]
     for well in wells:
@@ -54,7 +60,7 @@ def kernels(count,years,aq,grid=False):
     return a
 
 def design_matrix(plan,grid=False):
-    g=kernels(*plan.key(),grid)
+    g=kernels(*plan.key(),grid,plan.view_extent if grid else 10000)
     months,points,count=g.shape;years=len(plan.floors)
     a=np.zeros((months,points,years,count))
     for t in range(months):
@@ -107,14 +113,14 @@ def evaluate_plan(plan,grid=True):
     index=12*years-1
     result={'years':summaries,'rates':plan.rates,'score':cost(plan,h),'total_volume':sum(y['volume'] for y in summaries),
       'feasible':bool(plan.aquifer().initial_head<=plan.initial_floor-5 and all(y['feasible'] for y in summaries)),'confined_valid':bool(h[:,:25+plan.bore_count].min()>-900),
-      'wells':plan.wells().tolist(),'axis':AXIS.tolist(),'active_year':years-1,
+      'wells':plan.wells().tolist(),'axis':view_grid(plan.view_extent)[0].tolist(),'view_extent':plan.view_extent,'active_year':years-1,
       'target':plan.floors[-1]-5,'floor':plan.floors[-1],
       'objective':plan.objective,'objective_metric':objective_metric(plan,plan.rates,h),
       'operating_cost_aud':float((np.asarray(plan.rates)*unit_costs(plan)).sum()*365),'unit_costs':unit_costs(plan).tolist(),
       'conductivity':plan.conductivity,'transmissivity':plan.conductivity*plan.thickness,
       'engine':'timflow.transient 0.5.0','assessment':'Monthly controls across the complete plan; initial condition checked',
       'timeline':timeline(plan,h),'initial_floor':plan.initial_floor,'duration_days':365*years}
-    if grid:result['surface']=h[index,25+plan.bore_count:].reshape(25,25).tolist()
+    if grid:result['surface']=h[index,25+plan.bore_count:].reshape(len(view_grid(plan.view_extent)[0]),-1).tolist()
     return result
 
 def benchmark(plan):
@@ -148,13 +154,13 @@ def simulation_frames(request):
     """Incremental frames from one uninterrupted pumping history, no annual resets."""
     p=request.plan;n=len(p.floors)*12
     if request.start>n:raise ValueError('Frame outside the plan')
-    frames=[];g=None
+    frames=[];g=None;axis,grid_points=view_grid(p.view_extent)
     for step in range(request.start,min(n+1,request.start+request.count)):
         day=step*365/12;year=min(step//12,len(p.floors)-1)
         # The exact step has zero instantaneous response; previous pulses persist.
-        values=np.full(25+p.bore_count+len(GRID),p.aquifer().initial_head,dtype=float)
+        values=np.full(25+p.bore_count+len(grid_points),p.aquifer().initial_head,dtype=float)
         if step:
-            if g is None:g=kernels(*p.key(),True)
+            if g is None:g=kernels(*p.key(),True,p.view_extent)
             for k,q in enumerate(p.rates):
                 lag=step-12*k
                 if lag>0:values-=(g[lag-1]-(g[lag-13] if lag>12 else 0))@np.array(q)
@@ -162,7 +168,7 @@ def simulation_frames(request):
         volume=sum(sum(q)*min(max(day-k*365,0),365) for k,q in enumerate(p.rates))
         frames.append({'day':day,'head':head,'floor':floor,'target':floor-5,'active_year':year,
             'feasible':bool(head<=floor-5+1e-5),'confined_valid':bool(values[:25+p.bore_count].min()>p.aquifer().roof),
-            'surface':values[25+p.bore_count:].reshape(25,25).tolist(),'volume_to_date':volume})
+            'surface':values[25+p.bore_count:].reshape(len(axis),len(axis)).tolist(),'volume_to_date':volume})
     return {'frames':frames,'next':request.start+len(frames),'done':request.start+len(frames)>n,
-        'wells':p.wells().tolist(),'axis':AXIS.tolist(),'rates':p.rates,'duration_days':n*365/12,
+        'wells':p.wells().tolist(),'axis':axis.tolist(),'view_extent':p.view_extent,'rates':p.rates,'duration_days':n*365/12,
         'initial_floor':p.initial_floor,'years':[{'year':i+1,'floor':h,'target':h-5} for i,h in enumerate(p.floors)]}

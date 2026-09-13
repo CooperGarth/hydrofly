@@ -1,0 +1,9 @@
+# Neural monitor and regional head view
+
+The user supplied a FlyTilt monitor screenshot with a recessed brain display, dark forest-green frame, large activity count and two horizontal meters. HydroFly uses that composition with original generated artwork (`web/public/assets/fly-brain.jpg`). The asset is an artistic CNS-inspired illustration, not an anatomical reconstruction, measured activity or a network used by the agent. The rendered image brightens during controller requests and briefly pulses when an actual completed episode updates the telemetry. It is not a per-neuron activation map. Reduced-motion preferences disable the pulse.
+
+Q UPDATES is the cumulative Python Bellman-update count; EXPLORATION is the last completed episode's epsilon; TARGETS MET is the fraction of displayed pit-target samples passing. The target meter does not replace the separate confined-validity check. Learned-state and action counts derive from the current controller/plan. No neuron counts or joystick axes are claimed.
+
+K accepts 0.0001–5 m/day. The modelled display half-width is selectable as 2600, 10000 or 20000 m. The original 25 central coordinates are retained and five outer coordinates added per side when expanded, giving a nonuniform 35×35 grid. The infinite analytical aquifer is not bounded by this display grid. Maximum edge drawdown is reported; increase the view if drawdown remains appreciable there. Camera distance extends to 90 km, with a 150 km far clip. These are camera distances, not claims about hydraulic influence.
+
+Coarse regional cells may miss steep near-well structure at very low K. Pit/well controls still evaluate at their actual coordinates independently of mesh resolution. Low-K confined-assumption failures remain explicit. Tests check finite results at K=0.0001, equality of streamed and evaluated grids, preserved central heads and unchanged objective when the display extent changes.
