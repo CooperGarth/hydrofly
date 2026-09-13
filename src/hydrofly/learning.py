@@ -37,7 +37,7 @@ class Agent:
         deficits=np.maximum(h[:,:25]-self.targets,0)/self.scale
         pumping=float(q.sum()/(self.n*self.plan.capacity))
         active=float(np.count_nonzero(q)/self.n)
-        safe=bool(deficits.max()<1e-7)
+        safe=bool(deficits.max()<1e-7 and h.min()>self.plan.aquifer().roof)
         loss=float(np.mean(deficits**2)+.05*pumping+.015*active)
         return h,deficits,pumping,active,safe,loss
 

@@ -59,3 +59,15 @@ def test_learning_api_end_to_end_and_expired_session():
         assert exported['episodes']==1 and exported['q_table']
         SESSIONS.pop(body['session'])
         assert c.post('/api/learn/episode',json=body).status_code==422
+
+
+def test_rl_never_rewards_invalid_confined_target_as_success():
+    # Heavy extraction can meet pit targets while invalidating the confined model.
+    p=MinePlan(bore_count=4,floors=[-375],rates=[[10000]*4],capacity=10000,conductivity=.05)
+    agent=Agent(LearningStart(plan=p))
+    q=np.array(p.rates).ravel()
+    observation=agent.observe(q)
+    assert observation[0].min()<p.aquifer().roof
+    assert not observation[4]
+    _,reward,terminal=agent.transition(q,2*agent.n)
+    assert terminal and reward==-3

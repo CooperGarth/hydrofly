@@ -42,3 +42,7 @@ The frontend production build passed. Local HTTP/API checks passed. **Interactiv
 ## Version 0.3 annual history and RL
 
 The annual pulse-response matrix is compared with a directly scheduled timflow model including a shutdown and rate changes; prior-year memory is explicitly tested. The annual LP is checked at every quarterly pit sample. Q-learning tests verify the Bellman update, deterministic seeded training, non-mutating decisions, frozen evaluation, session expiry and the HTTP API. `scripts/learning_diagnostics.py` records seed 42: 30 episodes, 740 Q updates, 3/10 successes in the first ten versus 8/10 in the last ten. Unguided learned-policy evaluation passes all quarterly targets using 5,566,250 m³ across the plan, versus LP volume 4,503,573 m³. This is same-plan, single-seed evidence and does not demonstrate generalisation or superiority to the conventional method.
+
+## Interface-flow checks
+
+A jsdom integration test executes the actual mine-plan UI handlers against a real Python HTTP server. It verifies plan resizing, rejection of unapplied count edits, continued Q-learning across training batches, policy invalidation after bore edits, and no actuator request before arrival. Only the Three.js renderer is stubbed; this is DOM/transport coverage, not rendered-browser or WebGL verification. Run with `node --test web/plan.test.js` (set HYDROFLY_TEST_PYTHON if Python is in a separate virtual environment). A numerical regression also prevents an invalid confined state from being rewarded or counted as a successful learned design.

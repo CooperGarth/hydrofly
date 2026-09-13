@@ -5,12 +5,14 @@
   "type": "module",
   "scripts": {
     "build": "vite build --outDir ../dist --emptyOutDir",
-    "dev": "vite --host 0.0.0.0"
+    "dev": "vite --host 0.0.0.0",
+    "test": "node --test game-loop.test.js plan.test.js"
   },
   "dependencies": {
     "three": "0.180.0"
   },
   "devDependencies": {
+    "jsdom": "^26.1.0",
     "vite": "7.1.5"
   }
 }

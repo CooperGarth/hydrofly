@@ -26,7 +26,7 @@ The detailed [learning specification](docs/reinforcement-learning.md) defines ev
 
 Super Pit-inspired reference shell: 3.78 × 1.61 km, 750 m deep, based on a dated 2022 closure study. Mine-life reference: 2034+. [Sources](docs/super-pit.md). Rock groups are illustrative and do not constitute a site-calibrated heterogeneous groundwater model. Default synthetic K=0.2 m/day, b=200 m, S=0.001, initial head −365 m AHD, aquifer roof −900 m AHD.
 
-The version 0.2 single-year laboratory remains at `/classic.html`. Its independently verified single-well, superposition, recovery and conventional optimisation tests remain in the suite. Version 0.3 additionally tests annual-history response against directly scheduled timflow wells and actual Q-learning updates. The production build and Python/API checks run locally; interactive rendered-browser QA, Codespaces launch and hosted Docker validation remain outstanding in this environment.
+The version 0.2 single-year laboratory remains at `/classic.html`. Its independently verified single-well, superposition, recovery and conventional optimisation tests remain in the suite. Version 0.3 additionally tests annual-history response against directly scheduled timflow wells and actual Q-learning updates. 29 Python/API tests and four JavaScript tests pass locally, including actual UI handlers against the Python HTTP server (with only the renderer stubbed). Training can continue across batches. The production build passes; interactive rendered-browser QA, Codespaces launch and hosted Docker validation remain outstanding in this environment.
 
 Repository: [CooperGarth/hydrofly](https://github.com/CooperGarth/hydrofly), currently private. The public Python application is not yet deployed. `render.yaml` provides a Docker hosting blueprint; deployment requires a hosting account and approval of its compute charges.
 
@@ -42,8 +42,8 @@ source .venv/bin/activate
 pip install -r requirements-dev-lock.txt
 pip install --no-deps -e .
 pytest -q
-node --test web/game-loop.test.js
 npm ci --prefix web
+node --test web/game-loop.test.js web/plan.test.js
 npm run build --prefix web
 python -m uvicorn hydrofly.api:app --host 0.0.0.0 --port 8000
 ```

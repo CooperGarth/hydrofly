@@ -18,7 +18,7 @@ Let q be the annual rate matrix, N its number of entries, C the per-bore capacit
 - Displayed cost = p + 10,000 mean(d²) + 0.03 a.
 - Training potential L = mean(d²) + 0.05 p + 0.015 a.
 - Ordinary move reward = 20(L_before − L_after) − 0.01.
-- Stop reward = 5 − p − 0.3 a if all targets pass, otherwise −3.
+- Stop reward = 5 − p − 0.3 a if all targets pass and sampled heads remain above the aquifer roof, otherwise −3.
 - A move that violates sampled confined validity is rejected with reward −2.
 - An unsafe 80-move time limit receives an additional −3 and is terminal.
 
@@ -42,4 +42,4 @@ Training resets to the plan's original rate matrix each episode. One HTTP call p
 
 Run `python scripts/learning_diagnostics.py` to reproduce the seed-42, 30-episode experiment and plots. Compare training success with teacher-free evaluation and the HiGHS minimum-volume benchmark. That benchmark solves the continuous-rate volume objective with quarterly pit and confined-validity constraints; it does not minimise the non-convex active-bore count.
 
-A single seed on the same synthetic training plan is not a generalisation study. Reward can fluctuate and learning can fail. Plan edits require retraining. The server holds at most eight sessions, each with at most 2,000 Q states and the last 100 episode records. Sessions are in memory and disappear on restart or eviction; export saves the exact plan, Q-table and measured records as JSON. Restoring a Q-table for resumed training is not implemented. Use one Python worker until sessions have durable shared storage.
+A single seed on the same synthetic training plan is not a generalisation study. Reward can fluctuate and learning can fail. Continue training adds episodes to the same policy; plan or strategy edits require retraining. The server holds at most eight sessions, each with at most 2,000 Q states and the last 100 episode records. Sessions are in memory and disappear on restart or eviction; export saves the exact plan, Q-table and measured records as JSON. Restoring a Q-table for resumed training is not implemented. Use one Python worker until sessions have durable shared storage.
