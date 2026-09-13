@@ -8,19 +8,19 @@ from hydrofly.learning import Agent,LearningStart
 def test_annual_history_matches_direct_timflow_steps_and_recovery():
     p=MinePlan(bore_count=4,floors=[-375,-390],rates=[[700,400,100,0],[0,300,0,100]],active_year=1)
     m=build_model(p.aquifer(),p.wells(),[[(0,p.rates[0][i]),(365,p.rates[1][i])] for i in range(4)],tmax=730)
-    times=np.arange(1,9)*365/4
+    times=np.arange(1,25)*365/12
     selected=times!=365  # Adapter deliberately rejects exact pumping-change times.
     direct=heads(m,SUPERPIT.controls,times[selected],p.aquifer()).T
     np.testing.assert_allclose(numerical(p)[selected,:25],direct,atol=2e-5,rtol=1e-7)
     first=build_model(p.aquifer(),p.wells(),[[(0,q)] for q in p.rates[0]],tmax=730)
-    np.testing.assert_allclose(numerical(p)[3,:25],heads(first,SUPERPIT.controls,[365],p.aquifer())[:,0],atol=2e-5)
+    np.testing.assert_allclose(numerical(p)[11,:25],heads(first,SUPERPIT.controls,[365],p.aquifer())[:,0],atol=2e-5)
     reset=p.model_copy(update={'rates':[[0]*4,p.rates[1]]})
     assert np.max(abs(numerical(p)[-1]-numerical(reset)[-1]))>1
 
-def test_plan_benchmark_checks_all_quarters():
+def test_plan_benchmark_checks_all_months():
     p=MinePlan();r=benchmark(p)
     assert r['success'] and r['result']['feasible'] and r['result']['confined_valid']
-    assert all(max(y['quarter_heads'])<=y['target']+1e-5 for y in r['result']['years'])
+    assert all(t['head']<=t['target']+1e-5 for t in r['result']['timeline'])
     assert r['result']['total_volume']==pytest.approx(sum(y['total_rate']*365 for y in r['result']['years']))
 
 def test_q_learning_bellman_update_and_seed_reproducibility():

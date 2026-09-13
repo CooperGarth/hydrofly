@@ -12,10 +12,10 @@ from hydrofly.learning import Agent,LearningStart
 class Checkpoint(BaseModel):
     model_config=ConfigDict(extra='forbid',allow_inf_nan=False)
     request:LearningStart
-    q:dict[str,list[float]]=Field(default_factory=dict,max_length=500)
+    q:dict[str,list[float]]=Field(default_factory=dict,max_length=200)
     episodes:int=Field(default=0,ge=0,le=100000)
     updates:int=Field(default=0,ge=0,le=8000000)
-    cursor:int=Field(default=0,ge=0,le=160)
+    cursor:int=Field(default=0,ge=0,le=320)
     history:list[dict]=Field(default_factory=list,max_length=100)
     rng:str=Field(max_length=1000)
     running:list[float]|None=None
@@ -39,7 +39,7 @@ class PortableRequest(BaseModel):
     checkpoint:Checkpoint|None=None
 
 def restore(checkpoint):
-    a=Agent(checkpoint.request);a.max_states=500
+    a=Agent(checkpoint.request);a.max_states=200
     a.q={k:np.array(v,float) for k,v in checkpoint.q.items()}
     a.episodes=checkpoint.episodes;a.updates=checkpoint.updates;a.cursor=checkpoint.cursor
     a.history=checkpoint.history
@@ -58,7 +58,7 @@ def checkpoint(a):
 def handle(p):
     if p.operation=='start':
         if p.request is None:raise ValueError('A mine plan and strategy are required')
-        a=Agent(p.request);a.max_states=500
+        a=Agent(p.request);a.max_states=200
         value={'session':'portable','signature':a.signature,'algorithm':'Tabular Q-learning','alpha':.2,'gamma':.95}
     else:
         if p.checkpoint is None:raise ValueError('Learning checkpoint required')

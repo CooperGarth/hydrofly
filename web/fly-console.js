@@ -17,12 +17,12 @@ export function createFlyConsole(scene){
  function redraw(){
   ctx.fillStyle='#102b24';ctx.fillRect(0,0,512,256);ctx.fillStyle='#d1e3b5';ctx.font='13px monospace';ctx.fillText('WATER LEVEL / BENCH TARGET',15,21);
   if(model){
-   const rows=model.years,points=rows.flatMap(r=>r.quarter_heads.map((h,j)=>({t:r.year-1+(j+1)/4,h,target:r.target})));
-   const values=[...points.map(p=>p.h),...rows.flatMap(r=>[r.floor,r.target])],lo=Math.min(...values)-3,hi=Math.max(...values)+3;
+   const rows=model.years,points=model.timeline.map(p=>({t:p.day/365,h:p.head,target:p.target}));
+   const values=[model.initial_floor,model.initial_floor-5,...points.map(p=>p.h),...rows.flatMap(r=>[r.floor,r.target])],lo=Math.min(...values)-3,hi=Math.max(...values)+3;
    const x=t=>48+t/rows.length*445,y=h=>191-(h-lo)/(hi-lo)*145;
    ctx.font='10px monospace';ctx.fillStyle='#a5bea2';ctx.fillText('m AHD',3,40);
    for(let i=0;i<=3;i++){const h=lo+(hi-lo)*i/3;ctx.strokeStyle='#355547';ctx.beginPath();ctx.moveTo(48,y(h));ctx.lineTo(493,y(h));ctx.stroke();ctx.fillText(h.toFixed(0),4,y(h)+3);}
-   for(const [key,color,dash]of [['floor','#d6b78d',[]],['target','#e4a06f',[5,3]]]){ctx.strokeStyle=color;ctx.lineWidth=2;ctx.setLineDash(dash);ctx.beginPath();rows.forEach((r,i)=>{if(i)ctx.lineTo(x(i),y(r[key]));else ctx.moveTo(x(i),y(r[key]));ctx.lineTo(x(i+1),y(r[key]));});ctx.stroke();}
+   for(const [key,color,dash]of [['floor','#d6b78d',[]],['target','#e4a06f',[5,3]]]){ctx.strokeStyle=color;ctx.lineWidth=2;ctx.setLineDash(dash);ctx.beginPath();ctx.moveTo(x(0),y(model.initial_floor-(key==='target'?5:0)));rows.forEach((r,i)=>ctx.lineTo(x(i+1),y(r[key])));ctx.stroke();}
    ctx.setLineDash([]);ctx.strokeStyle='#76d5de';ctx.beginPath();points.forEach((p,i)=>i?ctx.lineTo(x(p.t),y(p.h)):ctx.moveTo(x(p.t),y(p.h)));ctx.stroke();
    points.forEach(p=>{ctx.fillStyle=p.h>p.target+1e-5?'#f39a73':'#76d5de';ctx.beginPath();ctx.arc(x(p.t),y(p.h),2.5,0,Math.PI*2);ctx.fill();});
    ctx.fillStyle='#adc6a7';for(let i=0;i<=rows.length;i++)ctx.fillText('Y'+i,x(i)-8,207);

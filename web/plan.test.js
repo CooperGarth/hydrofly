@@ -27,12 +27,12 @@ test('mine-plan controls use real Python, retain learning, and gate pump actions
   assert.match(el('activity').textContent,/Plan evaluated/);
   const plotted=[...el('level-chart').querySelectorAll('[data-head]')].map(e=>Number(e.dataset.head));
   const rows=[...el('level-values').querySelectorAll('tr')];
-  assert.equal(plotted.length,12);
-  assert.equal(rows.length,12);
+  assert.equal(plotted.length,121);
+  assert.equal(rows.length,121);
   assert.equal(el('level-chart').querySelectorAll('[data-series]').length,3);
   assert.equal(w.document.querySelector('.setup').open,false);
-  const numerical=await (await fetch(base+'/api/plan/evaluate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bore_count:10,floors:[-375,-382,-390],rates:Array.from({length:3},()=>Array(10).fill(500))})})).json();
-  assert.deepEqual(plotted,numerical.years.flatMap(y=>y.quarter_heads));
+  const numerical=await (await fetch(base+'/api/plan/evaluate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bore_count:10,floors:Array.from({length:10},(_,i)=>-375-8*i),rates:Array.from({length:10},()=>Array(10).fill(500))})})).json();
+  assert.deepEqual(plotted,numerical.timeline.map(t=>t.head));
 
   el('bore-count').value='4';
   const before=requests.length;await el('train').onclick();
@@ -41,6 +41,17 @@ test('mine-plan controls use real Python, retain learning, and gate pump actions
   for(let i=0;i<100&&el('evaluate').disabled;i++)await delay(100);
   assert.equal(el('bore-rows').querySelectorAll('input').length,4);
   assert.match(el('activity').textContent,/Plan evaluated/);
+  el('playback-speed').value='50';
+  const playing=el('simulate').onclick();
+  for(let i=0;i<100&&Number(el('simulation-progress').value)===0;i++)await delay(25);
+  el('pause').onclick();await playing;
+  const paused=Number(el('simulation-progress').value);
+  assert.ok(paused>0&&paused<365);
+  assert.equal(el('simulate').textContent,'Resume simulation');
+  await el('simulate').onclick();
+  assert.equal(Number(el('simulation-progress').value),365);
+  assert.equal(el('level-values').querySelectorAll('tr').length,13);
+  for(const input of el('bore-rows').querySelectorAll('input')){input.value='0';input.onchange();}
   el('episodes').value='1';await el('train').onclick();
   assert.equal(el('episode-number').textContent,'1');assert.ok(Number(el('updates').textContent)>0);
   await el('train').onclick();

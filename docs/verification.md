@@ -48,3 +48,10 @@ The annual pulse-response matrix is compared with a directly scheduled timflow m
 A jsdom integration test executes the actual mine-plan UI handlers against a real Python HTTP server. It verifies plan resizing, rejection of unapplied count edits, continued Q-learning across training batches, policy invalidation after bore edits, and no actuator request before arrival. Only the Three.js renderer is stubbed; this is DOM/transport coverage, not rendered-browser or WebGL verification. Run with `node --test web/plan.test.js` (set HYDROFLY_TEST_PYTHON if Python is in a separate virtual environment). A numerical regression also prevents an invalid confined state from being rewarded or counted as a successful learned design.
 
 Scenario update: `tests/test_objectives.py` verifies target-feasible benchmarks, optimal selected metrics relative to competing scenario solutions, reward use of the selected metric, cost units, and increased drawdown when the default K is reduced from 0.2 to 0.1 m/day. Earlier learning diagnostic counts above are historical and do not describe the updated rewards.
+
+
+## Ten-year trajectory checks
+
+38 Python tests and four JavaScript tests pass after the ten-year change. New checks compare streamed final-year heads and mesh samples against a directly scheduled timflow model, confirm an exact uniform day-zero state, retain recovery across batch/year boundaries, check cumulative volume and floor interpolation, and reject impossible initial clearance. The DOM/real-HTTP test verifies 121 trajectory samples (day zero plus 120 months), incremental simulation, pause/resume and completion. No WebGL rendering is exercised by that test.
+
+A local default ten-year Q-learning episode took 3.14 seconds including agent construction, made 80 updates and did not achieve all targets. This is a runtime observation and explicit failure result, not a claim of learned optimality or hosted latency. Existing older diagnostic figures remain historical.

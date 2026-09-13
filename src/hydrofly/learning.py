@@ -7,7 +7,7 @@ from collections import OrderedDict
 import hashlib,json,secrets
 import numpy as np
 from pydantic import BaseModel, ConfigDict, Field
-from hydrofly.mine_plan import MinePlan, design_matrix, evaluate_plan, objective_metric
+from hydrofly.mine_plan import MinePlan, design_matrix, evaluate_plan, objective_metric, target_heads
 
 class LearningStart(BaseModel):
     model_config=ConfigDict(extra='forbid',allow_inf_nan=False)
@@ -27,7 +27,7 @@ class Agent:
         self.q={};self.episodes=0;self.updates=0;self.history=[]
         self.rng=np.random.default_rng(request.seed);self.cursor=0
         self.n=self.plan.bore_count*len(self.plan.floors);self.actions=2*self.n+1
-        self.targets=np.repeat(np.array(self.plan.floors)-5,4)[:,None]
+        self.targets=target_heads(self.plan)[:,None]
         self.scale=np.maximum(-365-self.targets,1)
         self.running=None;self.pending=None
         self.signature=hashlib.sha256(json.dumps(request.model_dump(),sort_keys=True).encode()).hexdigest()
@@ -37,7 +37,7 @@ class Agent:
         deficits=np.maximum(h[:,:25]-self.targets,0)/self.scale
         pumping=float(q.sum()/(self.n*self.plan.capacity))
         active=float(np.count_nonzero(q)/self.n)
-        safe=bool(deficits.max()<1e-7 and h.min()>self.plan.aquifer().roof)
+        safe=bool(self.plan.aquifer().initial_head<=self.plan.initial_floor-5 and deficits.max()<1e-7 and h.min()>self.plan.aquifer().roof)
         loss=float(np.mean(deficits**2)+.05*objective_metric(self.plan,q,h))
         return h,deficits,pumping,active,safe,loss
 
@@ -45,7 +45,7 @@ class Agent:
         h,d,p,a,safe,loss=self.observe(q)
         worst=np.unravel_index(np.argmax(d),d.shape)
         # Explicit state aggregation: similar hydraulic states share Q values.
-        return f'{worst[0]//4}:{worst[1]}:{min(int(d.max()*20),40)}:{min(int(p*40),40)}:{int(a*10)}:{int(safe)}'
+        return f'{worst[0]//12}:{worst[1]}:{min(int(d.max()*20),40)}:{min(int(p*40),40)}:{int(a*10)}:{int(safe)}'
 
     def values(self,q):
         key=self.state(q)

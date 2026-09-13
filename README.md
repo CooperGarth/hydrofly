@@ -1,3 +1,5 @@
+> Current interface: one editable **10-year plan**, progressively simulated from day 0 to day 3650 at monthly sample points. Use **Run full simulation**, pause/resume, and edit the collapsed mine-plan settings. Bench elevations progress between year-end entries; pumping history never resets at year boundaries. See [current simulation semantics](docs/reinforcement-learning.md#ten-year-progressive-simulation). Historical quarterly descriptions and diagnostic artefacts below refer to earlier versions.
+
 # HydroFly
 
 ## Can a fruit fly dewater a mine?

@@ -100,8 +100,11 @@ def fly_act(s:FlyRequest):
     return run_job(compute)
 
 
-from hydrofly.mine_plan import MinePlan, evaluate_plan, benchmark
+from hydrofly.mine_plan import MinePlan, evaluate_plan, benchmark, SimulationRequest, simulation_frames
 from hydrofly.learning import LearningStart, LearnRequest, new_session, get_agent
+
+@app.post("/api/plan/simulate")
+def plan_simulate(p:SimulationRequest):return run_job(lambda:simulation_frames(p))
 
 @app.post("/api/plan/evaluate")
 def plan_evaluate(p:MinePlan):return run_job(lambda:evaluate_plan(p))

@@ -87,8 +87,8 @@ def build_model(aquifer=Aquifer(), wells=WELLS, schedules=None, well_radius=0.15
     Multiple aquifers/boundary elements can later be introduced in this factory
     without changing the renderer or agent protocol.
     """
-    if not np.isfinite(tmax) or not TMIN < tmax <= 1825:
-        raise ValueError("Model horizon must be positive and no longer than five years")
+    if not np.isfinite(tmax) or not TMIN < tmax <= 3650:
+        raise ValueError("Model horizon must be positive and no longer than ten years")
     wells = np.asarray(wells, dtype=float)
     if not np.isfinite(well_radius) or well_radius <= 0:
         raise ValueError("Well radius must be positive and finite")
