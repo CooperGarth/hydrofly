@@ -56,7 +56,7 @@ The default batch is 100 episodes, editable up to 10,000; **Train until paused**
 
 ## Policy evaluation
 
-**Run learned policy** starts at the original training schedule, freezes the weights, and disables both teacher guidance and random exploration. A deterministic analytical safeguard screens for improving, confined-valid single-rate actions; learned Q-values rank those candidates. It stops when no such action exists, a design repeats, or the move budget is reached. Therefore this is a **safeguarded, model-assisted policy test**, not proof that RL independently discovered feasibility. Coordinate-wise improvement can still stall away from the LP optimum.
+The frozen-policy diagnostic (available through the Python/API interface, with no separate button in the web UI) starts at the original training schedule, freezes the weights, and disables both teacher guidance and random exploration. A deterministic analytical safeguard screens for improving, confined-valid single-rate actions; learned Q-values rank those candidates. It stops when no such action exists, a design repeats, or the move budget is reached. Therefore this is a **safeguarded, model-assisted policy test**, not proof that RL independently discovered feasibility. Coordinate-wise improvement can still stall away from the LP optimum.
 
 The conventional whole-plan LP remains the reference. Training an already LP-fitted default drawdown schedule should not be expected to improve it. **Start from uniform pumping** provides an explicit editable challenge without silently changing the fitted demonstration.
 

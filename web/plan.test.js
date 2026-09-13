@@ -10,7 +10,7 @@ const root=fileURLToPath(new URL('../',import.meta.url));
 const base='http://127.0.0.1:8766';
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
 
-test('mine-plan controls use real Python, retain learning, and gate pump actions',{timeout:120000},async()=>{
+test('mine-plan controls use real Python, retain learning, and pause training',{timeout:120000},async()=>{
  const child=spawn(process.env.HYDROFLY_TEST_PYTHON||'python',['-m','uvicorn','hydrofly.api:app','--host','127.0.0.1','--port','8766'],{cwd:root,env:{...process.env,HYDROFLY_SKIP_WARMUP:'1'},stdio:['ignore','ignore','pipe']});
  let logs='';child.stderr.on('data',d=>logs+=d);let dom;
  try{
@@ -64,11 +64,6 @@ test('mine-plan controls use real Python, retain learning, and gate pump actions
   assert.match(el('level-compliance').textContent,/Best training plan/);
   assert.equal(el('episode-number').textContent,'2');
   assert.equal(requests.filter(p=>p==='/api/portable/learn/start').length,1);
-  permitArrival=false;
-  const acts=requests.filter(p=>p==='/api/portable/learn/act').length;
-  await el('run-learned').onclick();
-  assert.ok(arrivalCalls>0,'Cancellation test must reach an actual proposed action');
-  assert.equal(requests.filter(p=>p==='/api/portable/learn/act').length,acts);
   // Continuous training must exceed a one-episode batch and honour Pause.
   el('continuous-training').checked=true;
   const originalFetch=w.fetch;let completed=0;
@@ -82,6 +77,6 @@ test('mine-plan controls use real Python, retain learning, and gate pump actions
   // Editing a bore invalidates this plan's policy and clears learning telemetry.
   const bore=el('bore-0');bore.value='250';bore.onchange();
   assert.equal(el('episode-number').textContent,'0');
-  await el('run-learned').onclick();assert.match(el('activity').textContent,/Train the fly/);
+  assert.equal(el('run-learned'),null);
  }finally{dom?.window.close();child.kill('SIGTERM');await new Promise(resolve=>child.exitCode!==null?resolve():child.once('exit',resolve));}
 });
