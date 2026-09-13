@@ -28,12 +28,12 @@ class Agent:
         self.rng=np.random.default_rng(request.seed);self.cursor=0
         self.n=self.plan.bore_count*len(self.plan.floors);self.actions=2*self.n+1
         self.targets=target_heads(self.plan)[:,None]
-        self.scale=np.maximum(-365-self.targets,1)
+        self.scale=np.maximum(self.plan.initial_head-self.targets,1)
         self.running=None;self.pending=None
         self.signature=hashlib.sha256(json.dumps(request.model_dump(),sort_keys=True).encode()).hexdigest()
 
     def observe(self,q):
-        h=-365-self.a@q
+        h=self.plan.initial_head-self.a@q
         deficits=np.maximum(h[:,:25]-self.targets,0)/self.scale
         pumping=float(q.sum()/(self.n*self.plan.capacity))
         active=float(np.count_nonzero(q)/self.n)

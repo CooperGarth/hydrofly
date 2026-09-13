@@ -19,13 +19,13 @@ def test_ten_year_stream_matches_direct_timflow_including_previous_years():
 def test_day_zero_and_batch_boundary_do_not_reset_pumping_history():
     p=MinePlan(bore_count=4,floors=[-375,-390],rates=[[500]*4,[0]*4])
     first=simulation_frames(SimulationRequest(plan=p,start=0,count=1))['frames'][0]
-    assert first['head']==-365 and first['floor']==-350 and first['volume_to_date']==0
-    assert np.all(np.array(first['surface'])==-365)
+    assert first['head']==p.initial_head and first['floor']==-350 and first['volume_to_date']==0
+    assert np.all(np.array(first['surface'])==p.initial_head)
     a=simulation_frames(SimulationRequest(plan=p,start=11,count=3))['frames']
     b=simulation_frames(SimulationRequest(plan=p,start=13,count=1))['frames'][0]
     assert a[-1]==b
     assert b['head']==pytest.approx(numerical(p)[12,:25].max())
-    assert b['head']<-365
+    assert b['head']<p.initial_head
     assert floor_at(p,182.5)==-350
     assert floor_at(p,365-1e-6)==-350
     assert floor_at(p,365)==-375

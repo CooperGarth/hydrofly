@@ -29,7 +29,7 @@ def test_rewards_use_selected_objective_and_cost_units():
     assert r['operating_cost_aud']==pytest.approx(sum(sum(np.array(row)*unit_costs(p))*365 for row in p.rates))
 
 def test_lower_conductivity_delays_early_response_but_increases_late_drawdown():
-    p=MinePlan()
+    p=MinePlan(conductivity=.1,storativity=.001,rates=[[500.]*10 for _ in range(10)])
     assert p.conductivity==.1
     high=p.model_copy(update={'conductivity':.2})
     low_heads=numerical(p)[:,:25];high_heads=numerical(high)[:,:25]

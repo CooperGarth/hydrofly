@@ -1,3 +1,5 @@
+> Updated synthetic preset: initial head **−355 m AHD**, **K=0.05 m/day**, **S=0.01**, with a conventional minimum-excess-drawdown pumping schedule. **Fit water level** recomputes that schedule after edits; this preset is not an RL-trained result. See [parameter comparison](docs/target-fit.md).
+
 > Current interface: one editable **10-year plan**, progressively simulated from day 0 to day 3650 at monthly sample points. Use **Run full simulation**, pause/resume, and edit the collapsed mine-plan settings. Bench elevations hold constant and step down at year-end entries; pumping history never resets at year boundaries. See [current simulation semantics](docs/reinforcement-learning.md#ten-year-progressive-simulation). Historical quarterly descriptions and diagnostic artefacts below refer to earlier versions.
 
 # HydroFly

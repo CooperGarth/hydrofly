@@ -20,6 +20,7 @@ test('mine-plan controls use real Python, retain learning, and gate pump actions
   const w=dom.window,requests=[];let permitArrival=true,arrivalCalls=0;
   w.fetch=(path,options)=>{requests.push(path==='/api/portable/learn'?path+'/'+JSON.parse(options.body).operation:path);return fetch(new URL(path,base),options);};
   w.structuredClone=structuredClone;w.matchMedia=()=>({matches:true});
+  w.createBrainActivity=()=>({flash(){}});
   w.createMineScene=()=>({update(){},setActivity(){},focusFly(){},resetCamera(){},toggleSection(){},toggleSurface(){},operate:async()=>{arrivalCalls++;return permitArrival;}});
   const source=(await readFile(new URL('./plan.js',import.meta.url),'utf8')).replace(/^import .*;\n/gm,'');
   await w.eval(`(async()=>{${source}\n})()`);
@@ -32,7 +33,7 @@ test('mine-plan controls use real Python, retain learning, and gate pump actions
   assert.equal(el('level-chart').querySelectorAll('[data-series]').length,3);
   for(const key of ['floor','target']){const path=el('level-chart').querySelector(`[data-series="${key}"]`).getAttribute('d');assert.equal((path.match(/H/g)||[]).length,10);assert.equal((path.match(/V/g)||[]).length,10);assert.ok(!path.includes('L'));}
   assert.equal(w.document.querySelector('.setup').open,false);
-  const numerical=await (await fetch(base+'/api/plan/evaluate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({bore_count:10,floors:Array.from({length:10},(_,i)=>-375-8*i),rates:Array.from({length:10},()=>Array(10).fill(500))})})).json();
+  const numerical=await (await fetch(base+'/api/plan/evaluate',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({})})).json();
   assert.deepEqual(plotted,numerical.timeline.map(t=>t.head));
 
   el('bore-count').value='4';
