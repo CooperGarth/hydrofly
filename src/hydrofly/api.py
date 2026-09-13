@@ -110,7 +110,7 @@ def plan_simulate(p:SimulationRequest):return run_job(lambda:simulation_frames(p
 def plan_evaluate(p:MinePlan):return run_job(lambda:evaluate_plan(p))
 
 @app.post("/api/plan/benchmark")
-def plan_benchmark(p:MinePlan):return run_job(lambda:benchmark(p))
+def plan_benchmark(p:MinePlan,preview:bool=True):return run_job(lambda:benchmark(p,grid=preview))
 
 @app.post("/api/learn/start")
 def learn_start(p:LearningStart):return run_job(lambda:new_session(p))

@@ -91,3 +91,5 @@ Bench schedule update: the initial floor applies from day 0 until just before da
 ### Learning-controller repair
 
 Training now preserves the best plan, shares seven learned action-value weights across pumping decisions, and backtracks rate changes near constraints. Batches default to 100 episodes, with an option to train until paused. The frozen policy uses an explicit analytical improvement safeguard; the conventional LP remains the benchmark. The fitted default is already optimised for drawdown: use **Start from uniform pumping** for a learning challenge. See [controller methods](docs/reinforcement-learning.md), [measured results and limitations](docs/learning-verification.md), and the reproducible `scripts/verify_learning.py` diagnostic.
+
+The water-level dashboard now shows peak sampled drawdown, the reach of the 1 m drawdown contour, cumulative pumped volume and synthetic operating cost. Values accumulate during playback. See [metric definitions and the dashboard button audit](docs/dashboard-statistics.md).

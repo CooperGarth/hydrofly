@@ -5,6 +5,7 @@ import numpy as np
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 from scipy.optimize import linprog
 from hydrofly.preset import DEMO_RATES
+from hydrofly.dashboard import drawdown_statistics
 from hydrofly.engine import Aquifer, SUPERPIT, build_model, heads
 
 class MinePlan(BaseModel):
@@ -72,8 +73,15 @@ def design_matrix(plan,grid=False):
     return a.reshape(months,points,years*count)
 
 def numerical(plan,grid=False):
-    a=design_matrix(plan,grid)
-    return plan.aquifer().initial_head-a@np.array(plan.rates).ravel()
+    # Apply annual pulses directly, avoiding the large month×grid×bore-year
+    # design matrix on every UI update. The unit responses remain timflow's.
+    g=kernels(*plan.key(),grid,plan.view_extent if grid else 10000)
+    h=np.full(g.shape[:2],plan.initial_head,dtype=float)
+    for year,q in enumerate(plan.rates):
+        start=12*year;count=len(g)-start
+        h[start:]-=g[:count]@np.asarray(q)
+        if count>12:h[start+12:]+=g[:count-12]@np.asarray(q)
+    return h
 
 def floor_at(plan,day):
     # Right-continuous steps: the new bench applies exactly at its year-end date.
@@ -125,6 +133,7 @@ def evaluate_plan(plan,grid=True):
       'conductivity':plan.conductivity,'transmissivity':plan.conductivity*plan.thickness,
       'engine':'timflow.transient 0.5.0','assessment':'Monthly controls across the complete plan; initial condition checked',
       'timeline':timeline(plan,h),'initial_head':plan.initial_head,'initial_floor':plan.initial_floor,'duration_days':365*years}
+    result['statistics']={**drawdown_statistics(plan.initial_head,h,view_grid(plan.view_extent)[0] if grid else None,25+plan.bore_count,extra_points=np.vstack((SUPERPIT.controls,plan.wells()))),'pumped_volume_m3':result['total_volume'],'operating_cost_aud':result['operating_cost_aud'],'through_day':365*years}
     if grid:result['surface']=h[index,25+plan.bore_count:].reshape(len(view_grid(plan.view_extent)[0]),-1).tolist()
     return result
 
@@ -173,6 +182,7 @@ def simulation_frames(request):
         volume=sum(sum(q)*min(max(day-k*365,0),365) for k,q in enumerate(p.rates))
         frames.append({'day':day,'head':head,'floor':floor,'target':floor-5,'active_year':year,
             'feasible':bool(head<=floor-5+1e-5),'confined_valid':bool(values[:25+p.bore_count].min()>p.aquifer().roof),
+            'statistics':{**drawdown_statistics(p.initial_head,values,axis,25+p.bore_count,extra_points=np.vstack((SUPERPIT.controls,p.wells()))),'pumped_volume_m3':float(volume),'operating_cost_aud':float(sum(np.dot(q,unit_costs(p))*min(max(day-k*365,0),365) for k,q in enumerate(p.rates))),'through_day':day},
             'surface':values[25+p.bore_count:].reshape(len(axis),len(axis)).tolist(),'volume_to_date':volume})
     return {'frames':frames,'next':request.start+len(frames),'done':request.start+len(frames)>n,
         'wells':p.wells().tolist(),'axis':axis.tolist(),'view_extent':p.view_extent,'rates':p.rates,'duration_days':n*365/12,
