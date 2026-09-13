@@ -22,7 +22,7 @@ def test_rewards_use_selected_objective_and_cost_units():
         p=MinePlan(objective=objective)
         agent=Agent(LearningStart(plan=p));q=np.array(p.rates).ravel()
         h,d,_,_,safe,loss=agent.observe(q)
-        assert loss==pytest.approx(np.mean(d**2)+.05*objective_metric(p,q,h))
+        assert loss==pytest.approx(10000*np.mean(d**2)+objective_metric(p,q,h))
     p=MinePlan(objective='cost')
     from hydrofly.mine_plan import evaluate_plan
     r=evaluate_plan(p,grid=False)

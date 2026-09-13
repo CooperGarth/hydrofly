@@ -54,9 +54,14 @@ test('mine-plan controls use real Python, retain learning, and gate pump actions
   assert.equal(Number(el('simulation-progress').value),365);
   assert.equal(el('level-values').querySelectorAll('tr').length,13);
   for(const input of el('bore-rows').querySelectorAll('input')){input.value='0';input.onchange();}
-  el('episodes').value='1';await el('train').onclick();
+  el('episodes').value='1';
+  await el('train').onclick();assert.match(el('activity').textContent,/No feasible pumping schedule/);
+  assert.equal(requests.filter(p=>p==='/api/portable/learn/start').length,0);
+  el('conductivity').value='0.1';el('conductivity').dispatchEvent(new w.Event('change'));
+  await el('train').onclick();
   assert.equal(el('episode-number').textContent,'1');assert.ok(Number(el('updates').textContent)>0);assert.equal(Number(el('neural-updates').textContent),Number(el('updates').textContent));assert.ok(el('exploration-meter').value>0);
   await el('train').onclick();
+  assert.match(el('level-compliance').textContent,/Best training plan/);
   assert.equal(el('episode-number').textContent,'2');
   assert.equal(requests.filter(p=>p==='/api/portable/learn/start').length,1);
   permitArrival=false;
@@ -64,6 +69,16 @@ test('mine-plan controls use real Python, retain learning, and gate pump actions
   await el('run-learned').onclick();
   assert.ok(arrivalCalls>0,'Cancellation test must reach an actual proposed action');
   assert.equal(requests.filter(p=>p==='/api/portable/learn/act').length,acts);
+  // Continuous training must exceed a one-episode batch and honour Pause.
+  el('continuous-training').checked=true;
+  const originalFetch=w.fetch;let completed=0;
+  w.fetch=async(path,options)=>{const response=await originalFetch(path,options);
+    if(path==='/api/portable/learn'&&JSON.parse(options.body).operation==='episode'&&++completed===2)el('pause').onclick();
+    return response;};
+  await el('train').onclick();
+  assert.equal(completed,2);assert.equal(el('episode-number').textContent,'4');
+  assert.match(el('activity').textContent,/Training paused/);
+  w.fetch=originalFetch;el('continuous-training').checked=false;
   // Editing a bore invalidates this plan's policy and clears learning telemetry.
   const bore=el('bore-0');bore.value='250';bore.onchange();
   assert.equal(el('episode-number').textContent,'0');

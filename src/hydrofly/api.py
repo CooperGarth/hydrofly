@@ -132,7 +132,7 @@ def learn_export(p:LearnRequest):
     def export():
         a=get_agent(p.session)
         return {'algorithm':'Q-learning','signature':a.signature,'request':a.request.model_dump(),
-                'history':a.history,'q_table':{k:v.tolist() for k,v in a.q.items()},'episodes':a.episodes,'updates':a.updates}
+                'weights':a.weights.tolist(),'best_rates':a.best.tolist(),'history':a.history,'q_table':{k:v.tolist() for k,v in a.q.items()},'episodes':a.episodes,'updates':a.updates}
     return run_job(export)
 
 

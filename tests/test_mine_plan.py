@@ -27,10 +27,11 @@ def test_q_learning_bellman_update_and_seed_reproducibility():
     request=LearningStart(plan=MinePlan(bore_count=4,floors=[-375],rates=[[500]*4]),seed=7)
     a=Agent(request);q=np.array([500.]*4);key,values=a.values(q)
     a.update(key,0,1,q,True)
-    assert values[0]==pytest.approx(.2)
+    assert np.linalg.norm(a.weights)>0
+    assert a.values(q)[1][0]>0
     a=Agent(request);b=Agent(request)
     assert a.episode()==b.episode()
-    assert a.updates>0 and any(np.any(v!=0) for v in a.q.values())
+    assert a.updates>0 and np.any(a.weights!=0)
     a.start_run();old=a.running.copy();d=a.decision()
     np.testing.assert_array_equal(old,a.running)
     assert a.decision()==d
