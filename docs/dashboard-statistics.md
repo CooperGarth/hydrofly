@@ -44,4 +44,10 @@ All 16 named dashboard buttons are exercised by the DOM/HTTP integration test. T
 
 Year selectors are also exercised. A delayed-response/error test verifies immediate progress, duplicate-action prevention, correct Pause availability, preserved prior results and controls recovering after an empty HTTP 502 response.
 
-The browser preview rendered the new statistic panels, expansion and settings controls, and the explicit disabled-WebGL state. Its Python proxy returned HTTP 500, so browser end-to-end numerical interaction and deployed Vercel latency were not verified. The same UI handlers were tested against the working native Python server through the integration harness. A deployed application URL is needed for deployment-specific checks.
+## Live deployment audit — 13 September 2026
+
+Checked https://hydrofly.vercel.app/ against its hosted Python API. The guide and settings disclosures, expanded layout, uniform start, bore/year rate editing, all-off/equalise, plan resizing and explicit evaluation responded correctly. Fit water level achieved 121/121 sampled targets. Benchmark completed without applying new rates. Simulation paused at day 1460, resumed and completed day 3650 with cumulative statistics. Two 20-move training batches advanced from 20 to 40 Q updates, preserving learning between batches; this short check is not a convergence benchmark.
+
+The original shipped preset had six hosted target misses, all below 0.001 m, despite passing natively. A fresh hosted fit passed all samples. The preset was regenerated with 0.01 m numerical clearance at lowered targets and the confined-aquifer roof; target acceptance remains unchanged. After deployment, a fresh page load showed **121/121 targets**, **544.99 m maximum drawdown** and **32,176,443 m³ cumulative volume**. See `target-fit.md` for the numerical-buffer rationale. This is not an engineering safety factor.
+
+The browser reports WebGL disabled, so rendered camera motion remains unverified. Export reached its success message, but the browser automation did not expose a download event; actual file receipt remains unverified. The integration test separately checks export payload construction. First-use calculations can take several seconds; elapsed-time feedback was visible, but no formal hosted latency benchmark was conducted.
