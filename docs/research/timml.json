@@ -1,0 +1,55 @@
+{
+  "retrieved": "2026-09-13",
+  "source": "https://pypi.org/pypi/timml/json",
+  "name": "timml",
+  "version": "6.9.0",
+  "requires_python": ">=3.11",
+  "requires_dist": [
+    "numpy",
+    "scipy",
+    "numba",
+    "matplotlib",
+    "pandas",
+    "pytest; extra == \"ci\"",
+    "pytest-cov; extra == \"ci\"",
+    "pytest-xdist; extra == \"ci\"",
+    "nbval; extra == \"ci\"",
+    "jupyter; extra == \"ci\"",
+    "shapely; extra == \"ci\"",
+    "ruff; extra == \"ci\"",
+    "timml[ci]; extra == \"docs\"",
+    "sphinx; extra == \"docs\"",
+    "sphinx-design; extra == \"docs\"",
+    "pydata-sphinx-theme; extra == \"docs\"",
+    "numpydoc; extra == \"docs\"",
+    "myst_nb; extra == \"docs\"",
+    "sphinxcontrib-bibtex; extra == \"docs\"",
+    "sphinx-autoapi; extra == \"docs\""
+  ],
+  "license": "The MIT License (MIT)\n        \n        Copyright (c) 2015 Mark Bakker\n        \n        Permission is hereby granted, free of charge, to any person obtaining a copy\n        of this software and associated documentation files (the \"Software\"), to deal\n        in the Software without restriction, including without limitation the rights\n        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n        copies of the Software, and to permit persons to whom the Software is\n        furnished to do so, subject to the following conditions:\n        \n        The above copyright notice and this permission notice shall be included in all\n        copies or substantial portions of the Software.\n        \n        THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n        SOFTWARE.\n        \n        ",
+  "project_urls": {
+    "documentation": "http://mbakker7.github.io/timml/docs/builddocs/html/index.html",
+    "homepage": "https://github.com/mbakker7/timml",
+    "repository": "https://github.com/mbakker7/timml"
+  },
+  "files": [
+    {
+      "filename": "timml-6.9.0-py3-none-any.whl",
+      "upload_time_iso_8601": "2026-01-28T09:14:18.468027Z",
+      "digests": {
+        "blake2b_256": "77398333b23e230581fd4587fa3edcc5a9b07af5184a9258bacefcda862341b2",
+        "md5": "1e84f555110d6d24ad53977332ee058f",
+        "sha256": "018d4c64ebb5f5c1f78aa3ef0087f312ee2e9d8f9320f5459703bbf7dc61b2fa"
+      }
+    },
+    {
+      "filename": "timml-6.9.0.tar.gz",
+      "upload_time_iso_8601": "2026-01-28T09:14:20.012037Z",
+      "digests": {
+        "blake2b_256": "2e5859603f33f3960f7fc032d87acd6f90f3d4eafee2b20402f20f6c037cb9d5",
+        "md5": "d577f00ebce40e6bcdedd53f3dabc379",
+        "sha256": "f263d5d941902fbb791179552f1d551cabbe1fb0bea3400fe0da259dd8ca0dc3"
+      }
+    }
+  ]
+}

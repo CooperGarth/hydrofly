@@ -1,0 +1,9 @@
+{
+  "http_root": 200,
+  "engine": "timflow.transient 0.5.0",
+  "optimisation_success": true,
+  "frames": 18,
+  "total_rate_m3_day": 39294.109758882645,
+  "highest_control_head_m": 74.99999000000008,
+  "scope": "HTTP and API, not rendered browser verification"
+}

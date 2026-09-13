@@ -1,0 +1,15 @@
+{
+  "engine": "timflow.transient 0.5.0",
+  "reference": "AnaFlow 1.2.0 Theis",
+  "max_absolute_single_well_error_m": 2.5155099587781393e-06,
+  "grid_shape": [
+    35,
+    35
+  ],
+  "wells": 10,
+  "cold_response_seconds": 1.6803906710001684,
+  "cached_response_seconds": 0.00010756800020317314,
+  "diagnostic_total_m3_day": 35000,
+  "diagnostic_worst_head_m": 77.73433192677777,
+  "target_head_m": 75
+}

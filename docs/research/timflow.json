@@ -1,0 +1,62 @@
+{
+  "retrieved": "2026-09-13",
+  "source": "https://pypi.org/pypi/timflow/json",
+  "name": "timflow",
+  "version": "0.5.0",
+  "requires_python": ">=3.11",
+  "requires_dist": [
+    "numpy",
+    "scipy",
+    "numba",
+    "matplotlib",
+    "pandas",
+    "tqdm",
+    "ruff; extra == \"lint\"",
+    "lmfit; extra == \"lmfit\"",
+    "timflow[lmfit]; extra == \"optional\"",
+    "timflow[lint,optional]; extra == \"ci\"",
+    "pytest; extra == \"ci\"",
+    "pytest-cov; extra == \"ci\"",
+    "pytest-xdist; extra == \"ci\"",
+    "nbval; extra == \"ci\"",
+    "papermill; extra == \"ci\"",
+    "jupyter; extra == \"ci\"",
+    "shapely; extra == \"ci\"",
+    "timflow[ci]; extra == \"docs\"",
+    "sphinx; extra == \"docs\"",
+    "sphinx-design; extra == \"docs\"",
+    "pydata-sphinx-theme; extra == \"docs\"",
+    "numpydoc; extra == \"docs\"",
+    "myst_nb; extra == \"docs\"",
+    "sphinxcontrib-bibtex; extra == \"docs\"",
+    "sphinx-autoapi; extra == \"docs\"",
+    "jupyter-cache; extra == \"docs\"",
+    "timflow[docs]; extra == \"dev\""
+  ],
+  "license": "MIT License\n        \n        Copyright (c) 2026 timflow-org\n        \n        Permission is hereby granted, free of charge, to any person obtaining a copy\n        of this software and associated documentation files (the \"Software\"), to deal\n        in the Software without restriction, including without limitation the rights\n        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n        copies of the Software, and to permit persons to whom the Software is\n        furnished to do so, subject to the following conditions:\n        \n        The above copyright notice and this permission notice shall be included in all\n        copies or substantial portions of the Software.\n        \n        THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n        SOFTWARE.\n        ",
+  "project_urls": {
+    "documentation": "https://timflow.readthedocs.io/en/latest/",
+    "homepage": "https://github.com/timflow-org/timflow",
+    "repository": "https://github.com/timflow-org/timflow"
+  },
+  "files": [
+    {
+      "filename": "timflow-0.5.0-py3-none-any.whl",
+      "upload_time_iso_8601": "2026-09-10T09:14:57.883347Z",
+      "digests": {
+        "blake2b_256": "48a0e54c5f3ed5b648e55aa23e4e7ae02f542150d26037ba3149c43e4bfbaacd",
+        "md5": "eb2906a0e2cf03e09fe8821b3afd54fb",
+        "sha256": "a51c3580bc210fd3810253f6e4e201995d609f9fefbded57c102180f72f99785"
+      }
+    },
+    {
+      "filename": "timflow-0.5.0.tar.gz",
+      "upload_time_iso_8601": "2026-09-10T09:15:00.982984Z",
+      "digests": {
+        "blake2b_256": "836ff97588722ddc8b982c9c4e06b61e7edc21839d1d549ebe85001fa52ab186",
+        "md5": "793abaf8beca442572c6d071910da251",
+        "sha256": "9f04414cefa1eff464c7055468916fdb87f689749be2086763e304b6348b5f02"
+      }
+    }
+  ]
+}

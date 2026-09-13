@@ -1,0 +1,313 @@
+{
+  "retrieved": "2026-09-13",
+  "source": "https://pypi.org/pypi/anaflow/json",
+  "name": "anaflow",
+  "version": "1.2.0",
+  "requires_python": ">=3.9",
+  "requires_dist": [
+    "numpy>=1.20.0",
+    "pentapy<2,>=1.1.0",
+    "scipy>=1.5.4",
+    "myst-parser; extra == \"doc\"",
+    "matplotlib>=3.7; extra == \"doc\"",
+    "numpydoc>=1.1; extra == \"doc\"",
+    "sphinx>=7; extra == \"doc\"",
+    "sphinx-gallery>=0.8; extra == \"doc\"",
+    "sphinx-rtd-theme>=3; extra == \"doc\"",
+    "pytest-cov>=3; extra == \"test\"",
+    "black>=25; extra == \"check\"",
+    "isort[colors]; extra == \"check\"",
+    "ruff>=0.5.0; extra == \"check\"",
+    "cython-lint; extra == \"check\""
+  ],
+  "license": "MIT",
+  "project_urls": {
+    "Changelog": "https://github.com/GeoStat-Framework/anaflow/blob/main/CHANGELOG.md",
+    "Conda-Forge": "https://anaconda.org/conda-forge/anaflow",
+    "Documentation": "https://anaflow.readthedocs.io",
+    "Homepage": "https://github.com/GeoStat-Framework/AnaFlow",
+    "Source": "https://github.com/GeoStat-Framework/anaflow",
+    "Tracker": "https://github.com/GeoStat-Framework/anaflow/issues"
+  },
+  "files": [
+    {
+      "filename": "anaflow-1.2.0-cp310-cp310-macosx_10_9_x86_64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:15.350056Z",
+      "digests": {
+        "blake2b_256": "5b4d2ea145cb4abb17fccb079dd8e1b1a76a3e7157ffda872a6b9088f339e4d3",
+        "md5": "6ac86ddb361d0a8e6759b2884b4f4386",
+        "sha256": "b04058e39e5c1c8d50324ac81b20a51b08c1c2e566a39006fdc2543b488381d2"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp310-cp310-macosx_11_0_arm64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:16.529337Z",
+      "digests": {
+        "blake2b_256": "4bc06149b10270eb35eec32894d97b0bff702a5a9194395846ab138760e143bf",
+        "md5": "2aaa6f650673b491cba03620720c1277",
+        "sha256": "19980275b659142a852d1bf5f3b3d4f57cebbf066b00f96bf4afe3c7c01e26d9"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp310-cp310-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:17.637248Z",
+      "digests": {
+        "blake2b_256": "f28a8efa365c7f1272e27b1d1a96c0e769b8a365769a3f46b3033ad57b73be99",
+        "md5": "3b27b3c0da0fd399fed84bf06feef57a",
+        "sha256": "d5a6dcf937cc61017b6a445e8259a097ad5936f59b6a36430a1dd697ed140374"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp310-cp310-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:19.101673Z",
+      "digests": {
+        "blake2b_256": "858266b85ad131c344ccd487d9662290828176fad50936d99be4415b37d3df2d",
+        "md5": "3bbdf2fcd7e4be68e62284a99b5af47b",
+        "sha256": "033574acce9067f83794e64b63feab45072840ccb11064aefd05416e63801c64"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp310-cp310-win_amd64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:20.129653Z",
+      "digests": {
+        "blake2b_256": "a50f1077498065969b26654f4e43a084663c6f8503b10cf2cf2910d5533d3de4",
+        "md5": "ad0ec14d975312b23976c34205d7dc70",
+        "sha256": "294f83c6ffe730589afd1b5dc16ffafd20d16df88867ed72f3aa5af149960287"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp311-cp311-macosx_10_9_x86_64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:21.863115Z",
+      "digests": {
+        "blake2b_256": "405686b78584d580c657b4980dbb5f1538074f4429afda0798987478144bf735",
+        "md5": "e347a6babcb5e5968f6fbfe662eed97f",
+        "sha256": "cd5ed375ae5b79d43aa78161732afc04f38a2dfb7ccb2eba8d0a5c7755c15961"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp311-cp311-macosx_11_0_arm64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:23.039839Z",
+      "digests": {
+        "blake2b_256": "f477f6a53b144e70eded336804dcd30b14f13ac3b234756aeae5737e3980f67a",
+        "md5": "c165bff486e7d735b57587e19c2bfec0",
+        "sha256": "151039ce90dc074ea07f92899841120c2a5ef8dabba5c4dba063912934a27120"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp311-cp311-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:24.504477Z",
+      "digests": {
+        "blake2b_256": "cc0a77b84ec7793c9fcadf15316189d1a27c33f044053d77c3ab5565e49ff6be",
+        "md5": "7b3ce74f49ccc6d4f6e2e79a373b5030",
+        "sha256": "50c421cecf9cccd0b32ca5f1247881bac4b49974c3c4a142b4980e597839d48a"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp311-cp311-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:25.643430Z",
+      "digests": {
+        "blake2b_256": "43efe8aab3cfc5a65d8d433df7ca38da3bf30e9899778b6d31e30be3ad8de303",
+        "md5": "9411c417b21fee858d1915f60be7de70",
+        "sha256": "14f1d7209679b3ffb479f6ebff4321add30b85fab3a21a427ec988c895541a06"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp311-cp311-win_amd64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:26.728914Z",
+      "digests": {
+        "blake2b_256": "20ec255749d85f1154bffcc73c50ac9ae999098e173a441b437db29d2f9128a5",
+        "md5": "4474f9f54f988eab4b84940af7b8af33",
+        "sha256": "82c84184abd9da1d21b3f2b37d7f00d9da71288835f2e7c78cff8233d1f8f629"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp312-cp312-macosx_10_13_x86_64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:28.081055Z",
+      "digests": {
+        "blake2b_256": "01f0a2985d0565fd3c102982d251f9ec1c92ad6c900434d18996e88a47614080",
+        "md5": "63e1ab28c5135ecc3561f4f00fd871a6",
+        "sha256": "273cf6ab3542198bed0081019a40799c559934281f408dff2c56d0160aea13de"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp312-cp312-macosx_11_0_arm64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:29.089629Z",
+      "digests": {
+        "blake2b_256": "5864af13ca4fc8d974d87196e286e119210165b8f01d2dee0afb80e0b1f4827b",
+        "md5": "a77509408c2f3387e33c5388f9418320",
+        "sha256": "13b6e382e3c24f0b08811b29f7f9ea9e10bb171e14d519afa505b93efd2fb0e4"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp312-cp312-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:30.202350Z",
+      "digests": {
+        "blake2b_256": "e47b7b950b7b3cc7791f1f6ff9b11271f70f9c32938ad0d7d8ebf67e0e4d6873",
+        "md5": "55e8a55444757eef1399ce3f8ea7ca04",
+        "sha256": "1e0f512827a38d725e415191cf91fc320dedea7768b17d5e9c8f26c60f533051"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp312-cp312-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:31.750293Z",
+      "digests": {
+        "blake2b_256": "4b500a857548c21679892f5a4fb34c0725f4538c13749ed94c7b811ee1c57cb1",
+        "md5": "bbc5750c7b2ef06cc7251aae76834b8b",
+        "sha256": "c942d119649194b28bdadbd094b25c36d0483a90da436c1379a4c963c9f85aa9"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp312-cp312-win_amd64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:33.523043Z",
+      "digests": {
+        "blake2b_256": "1d9e8f2899541622260ab556a2cbc26f2608595970169702a55ad27543c1a51d",
+        "md5": "41af154696e4aa30020884fcfd08831f",
+        "sha256": "d032e4a98a78bacaabc91be481ac2c2152c5f34bba36eb62af04f0411049c38c"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp313-cp313-macosx_10_13_x86_64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:34.512961Z",
+      "digests": {
+        "blake2b_256": "b12be2aaae71f5a837db1e851e8915af232eb58d512a31ef3b1dfe497126a9d3",
+        "md5": "ef0748d632659cdde09dce53e3e36bc4",
+        "sha256": "2acea14703ba9c5fdba2c6dd34f7a50895d23b1ddae2723abc7bcdae738bae03"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp313-cp313-macosx_11_0_arm64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:35.515623Z",
+      "digests": {
+        "blake2b_256": "3bb0dd8adaefe9b7d217c75ec5ec2149cb5085bc82250664386f5123694f5d87",
+        "md5": "70057245b54902b4ff1c8ccd6e8fe894",
+        "sha256": "4d837cd6c024abb2d5052076de16dd67ecee3c45b9c1c82874efa0def2674b0f"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp313-cp313-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:36.980027Z",
+      "digests": {
+        "blake2b_256": "2be4d6e9ff34ce068fca3f25678e5c3ca4b1888a1b202b6c2a690771c878923e",
+        "md5": "ef3782f0163e48cf33e186607139afdd",
+        "sha256": "178d4474bae9cbbb39d4519aa1f1163dae08dbee80a297f1e0608113dcd4bc54"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp313-cp313-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:38.129777Z",
+      "digests": {
+        "blake2b_256": "ae000ca8f4b1bce1c217cc968539b0e11b5968ac1b60f70a472cb060ed20a331",
+        "md5": "a8366b4b623726502c62d25a728cc3d2",
+        "sha256": "ae352f74a631adc59b952e61b75bc256bc828ba7b74c98635a593b475205c471"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp313-cp313-win_amd64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:39.657727Z",
+      "digests": {
+        "blake2b_256": "f4aad9c15db80c4197fc4e226a97c97c5be07daa7fe3302f2d95a7698e12721e",
+        "md5": "31e6a7ddc0ae0557a34de15d1c5f0d88",
+        "sha256": "2d6f40a49a11123d2ed73363ddf05cf756e0336c12148d0d72ae2a0ea96cedb9"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp314-cp314-macosx_10_15_x86_64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:40.655088Z",
+      "digests": {
+        "blake2b_256": "c1b25a011ed0b4655adacad9606386cda5b97d9dc178276242ea3cc9e2821f05",
+        "md5": "5737a746d75e57e41c6c07634bd5cc7e",
+        "sha256": "9364313fd1c4fd1eff32c57af9ef8a52be8a1fc8dd149738c8c7a35209cad03c"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp314-cp314-macosx_11_0_arm64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:41.644105Z",
+      "digests": {
+        "blake2b_256": "cec5f257e9b142e7c41e8878f991505957d2d55afa99fdd9ae57079775738f33",
+        "md5": "1bacee670bf7ca4141e51ac4200dd0d0",
+        "sha256": "db6fa21de5906256a25b05657241478ac7af5f771daec1bb3dd6f03499c9233e"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp314-cp314-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:42.823355Z",
+      "digests": {
+        "blake2b_256": "73a45f7609a25249264fc49f068ff8cdb01c9ef4094483b4cb448ea6b6949b24",
+        "md5": "4bcd96e279f6a014ca6d43a523980f70",
+        "sha256": "819f5f2e6f8c2b09e38e04e02f912f73280d7bac252c7809c9ef61ae63fb0f3a"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp314-cp314-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:44.100577Z",
+      "digests": {
+        "blake2b_256": "4742556f02bbaa7636ad1e98c135c3e84d79f04d98ac6c6bdbc7bc5307edb6fd",
+        "md5": "3c3db5c5552d4ebbd55f31e1004f9f60",
+        "sha256": "9a1fbbda9843d8c4ee9f5941fbbc5ab8e95e75b8d5b876970e6891d4a48ba139"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp314-cp314-win_amd64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:45.482742Z",
+      "digests": {
+        "blake2b_256": "ff9ee5656bf29e5a6d86e200e802f0821784a6483070c8dd31c38dc6d6cbc5c3",
+        "md5": "c3b2b299b5a9d39b90a37305e02abf9c",
+        "sha256": "c662b03e57af74d66e6812c5e405f7bb69ff084d8cf6085330e5e04675f661d2"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp39-cp39-macosx_10_9_x86_64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:46.458061Z",
+      "digests": {
+        "blake2b_256": "87ea2867d2a00673fee321a56d3fd0cc6e4bd51bc7b1145e325362276006944b",
+        "md5": "6f54fdb5e87598bedd6f502fd5be4134",
+        "sha256": "41966c016380a9ee27736288892d170b75c4047f7631d50f4beebcca81fa4e1f"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp39-cp39-macosx_11_0_arm64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:47.422643Z",
+      "digests": {
+        "blake2b_256": "650be7c01a6c803c0c86cd4a5324f511879a36ef65867de44dfe1f7815ebe2e3",
+        "md5": "6236854b82d9f5664a7acfe4e70440c4",
+        "sha256": "57d8d8a68b7ff0e78c007382c90ffb8db68cb4e2833e15e2cf7791766aea91ed"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp39-cp39-manylinux2014_aarch64.manylinux_2_17_aarch64.manylinux_2_28_aarch64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:48.832447Z",
+      "digests": {
+        "blake2b_256": "fbdcca8a27e5a6e820c5ccb94d9dcc699e4f70059aa1a06c930dc017cd0d5b93",
+        "md5": "5efc3ef9c5f53a5eacdfbc4d16df3346",
+        "sha256": "257e5c1237cbce169a409b40df850c5e704a353106df475dff050a1de049b305"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp39-cp39-manylinux2014_x86_64.manylinux_2_17_x86_64.manylinux_2_28_x86_64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:50.042238Z",
+      "digests": {
+        "blake2b_256": "8870ae4037d1c359c456efd1b717ff1b19698864478d49b659e01d4cd99933cb",
+        "md5": "6d3dcb9acf3c99c67d4bc13d2aa93562",
+        "sha256": "4f855f8bad124d174d22bbfb1db7fe8e8b66372b14a1362436792628b773fd78"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0-cp39-cp39-win_amd64.whl",
+      "upload_time_iso_8601": "2025-10-17T10:33:51.157062Z",
+      "digests": {
+        "blake2b_256": "45844b56bc9120898be731f89ee87018fdb33737afccfcb186f904e1cb9dc491",
+        "md5": "9805c33f2da1d4283f3a31475dae4660",
+        "sha256": "9ba2f9485d3739ca15785926a1af5ea8056cab4c997aabd572d3d2fd7dc3982a"
+      }
+    },
+    {
+      "filename": "anaflow-1.2.0.tar.gz",
+      "upload_time_iso_8601": "2025-10-17T10:33:52.042896Z",
+      "digests": {
+        "blake2b_256": "dee9ea28d13f331b30cbee06d63eb2946d06c68bd02057b65b5ea9e54ea1586f",
+        "md5": "c190e467652cf3e92c895787cd1d06b8",
+        "sha256": "150e1901c4ccbba14066b7ec607bba393a9cab43ae878747937417f4d50649f7"
+      }
+    }
+  ]
+}

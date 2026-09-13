@@ -1,0 +1,57 @@
+{
+  "retrieved": "2026-09-13",
+  "source": "https://pypi.org/pypi/ttim/json",
+  "name": "ttim",
+  "version": "0.8.0",
+  "requires_python": ">=3.11",
+  "requires_dist": [
+    "numpy",
+    "scipy",
+    "numba",
+    "matplotlib",
+    "lmfit",
+    "pandas",
+    "pytest; extra == \"ci\"",
+    "pytest-cov; extra == \"ci\"",
+    "pytest-sugar; extra == \"ci\"",
+    "jupyter; extra == \"ci\"",
+    "shapely; extra == \"ci\"",
+    "coveralls; extra == \"ci\"",
+    "ruff; extra == \"ci\"",
+    "timml; extra == \"ci\"",
+    "ttim[ci]; extra == \"docs\"",
+    "sphinx; extra == \"docs\"",
+    "sphinx-design; extra == \"docs\"",
+    "pydata-sphinx-theme; extra == \"docs\"",
+    "numpydoc; extra == \"docs\"",
+    "myst_nb; extra == \"docs\"",
+    "sphinxcontrib-bibtex; extra == \"docs\"",
+    "sphinx-autoapi; extra == \"docs\""
+  ],
+  "license": "The MIT License (MIT)\n        \n        Copyright (c) 2015 mbakker7\n        \n        Permission is hereby granted, free of charge, to any person obtaining a copy\n        of this software and associated documentation files (the \"Software\"), to deal\n        in the Software without restriction, including without limitation the rights\n        to use, copy, modify, merge, publish, distribute, sublicense, and/or sell\n        copies of the Software, and to permit persons to whom the Software is\n        furnished to do so, subject to the following conditions:\n        \n        The above copyright notice and this permission notice shall be included in all\n        copies or substantial portions of the Software.\n        \n        THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n        IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n        FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE\n        AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER\n        LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,\n        OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE\n        SOFTWARE.\n        \n        ",
+  "project_urls": {
+    "documentation": "http://mbakker7.github.io/ttim/docs/builddocs/html/index.html",
+    "homepage": "https://github.com/mbakker7/ttim",
+    "repository": "https://github.com/mbakker7/ttim"
+  },
+  "files": [
+    {
+      "filename": "ttim-0.8.0-py3-none-any.whl",
+      "upload_time_iso_8601": "2026-01-28T09:11:46.608258Z",
+      "digests": {
+        "blake2b_256": "77ab04d8ded05ebee9f8959a21b3dd8da637f14a9e08cb33cae435863e5f8564",
+        "md5": "abf8a92b5d4eb3709e3a9603c5b2630a",
+        "sha256": "ee305609e87b6bb8ffe6b48060bef6f8116da000f4dd20cab2170f5fb41d184f"
+      }
+    },
+    {
+      "filename": "ttim-0.8.0.tar.gz",
+      "upload_time_iso_8601": "2026-01-28T09:11:48.168799Z",
+      "digests": {
+        "blake2b_256": "a7fef4b8aa3acca393f6db305fd5f67073875a01fc8d14a4e3664a828b21999d",
+        "md5": "82ef5418e44354a4a30295ed4b9b5aa2",
+        "sha256": "76cc963034e1967c9a842d720aa704bc4f08280d5458cb39d8a0a59c779f577b"
+      }
+    }
+  ]
+}

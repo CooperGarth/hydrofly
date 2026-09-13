@@ -1,0 +1,16 @@
+{
+  "name": "hydrofly-web",
+  "version": "0.2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "vite build --outDir ../dist --emptyOutDir",
+    "dev": "vite --host 0.0.0.0"
+  },
+  "dependencies": {
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "vite": "7.1.5"
+  }
+}
