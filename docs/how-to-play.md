@@ -79,3 +79,7 @@ To calculate farther from the mine, change **Aquifer properties → Modelled hal
 ### Training does not start
 
 The learning panel now reports feasibility checks, first-episode calculation and errors directly. “Starting pumping rates lower sampled head below the confined aquifer roof” means the initial schedule violates the analytical model assumptions; it is not a training freeze. Select **Reset all rates to zero and train** to explicitly replace every bore-year rate with zero and start a new policy. The mine plan, aquifer and teaching settings are retained. No conventional optimiser rates are injected. Alternatively, lower rates manually. Day-zero target failures and impossible borefields require changes to the relevant inputs; resetting pumping cannot repair those conditions.
+
+### Fruit fly control room
+
+The separate enclosure above the neural monitor shows the fly buzzing when idle and typing/fidgeting during calculations. During training, a positive returned episode reward earns fruit and a negative reward triggers a brief cartoon zap; zero reward triggers neither. These cues report the aggregate episode reward, not each individual trial or proof of new knowledge. Random fidgets are decorative and never change model decisions. Motion respects your device’s reduced-motion preference. The enclosure renders independently of WebGL.

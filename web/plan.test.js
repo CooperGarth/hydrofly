@@ -6,6 +6,7 @@ import {readFile} from 'node:fs/promises';
 import {spawn} from 'node:child_process';
 import {fileURLToPath} from 'node:url';
 import {JSDOM} from 'jsdom';
+import {createFlyCompanion} from './fly-companion.js';
 const root=fileURLToPath(new URL('../',import.meta.url));
 const base='http://127.0.0.1:8766';
 const delay=ms=>new Promise(r=>setTimeout(r,ms));
@@ -20,6 +21,7 @@ test('mine-plan controls use real Python, retain learning, and pause training',{
   const w=dom.window,requests=[];let permitArrival=true,arrivalCalls=0;
   w.fetch=(path,options)=>{requests.push(path==='/api/portable/learn'?path+'/'+JSON.parse(options.body).operation:path);return fetch(new URL(path,base),options);};
   w.AbortController=AbortController;w.structuredClone=structuredClone;w.matchMedia=()=>({matches:true});
+  w.createFlyCompanion=createFlyCompanion;
   w.createBrainActivity=()=>({flash(){}});
   const cameraCalls=[];let section=false,surface=true;
   w.createMineScene=()=>({update(){},setActivity(){},focusFly(){cameraCalls.push('fly');},resetCamera(){cameraCalls.push('reset');},toggleSection(){section=!section;return section;},toggleSurface(){surface=!surface;return surface;}});
@@ -126,4 +128,20 @@ test('mine-plan controls use real Python, retain learning, and pause training',{
   assert.deepEqual([...w.document.querySelectorAll('button[id]')].map(e=>e.id).filter(id=>!clicked.has(id)),[]);
 
  }finally{dom?.window.close();child.kill('SIGTERM');await new Promise(resolve=>child.exitCode!==null?resolve():child.once('exit',resolve));}
+});
+
+// Reward feedback must reflect real telemetry; neutral updates are not prizes.
+test('fly companion responds to signed rewards and preserves cues across phase changes',()=>{
+ const dom=new JSDOM('<section id="pet"></section>');
+ const host=dom.window.document.getElementById('pet'),pet=createFlyCompanion(host);
+ try{
+ assert.equal(host.dataset.mood,'idle');
+ pet.setPhase('typing',true);assert.equal(host.dataset.mood,'typing');
+ pet.reward(0);assert.equal(host.dataset.mood,'typing');
+ pet.reward(2);assert.equal(host.dataset.mood,'fed');
+ pet.setPhase('idle');assert.equal(host.dataset.mood,'fed');
+ pet.reward(-1);assert.equal(host.dataset.mood,'zapped');
+ pet.reset();assert.equal(host.dataset.mood,'idle');
+ pet.reward(NaN);assert.equal(host.dataset.mood,'idle');
+ }finally{pet.dispose();dom.window.close();}
 });
