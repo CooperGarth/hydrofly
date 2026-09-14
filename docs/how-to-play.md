@@ -87,3 +87,9 @@ The separate enclosure above the neural monitor shows the fly buzzing when idle 
 The fly uses a persistent animation clock: API progress changes its movement destination without resetting its pose. Wings and typing continue between server responses, with smooth landings and take-offs. Reduced-motion settings dampen travel and reactions rather than turning the enclosure into a static frame.
 
 Reward reactions last four seconds: fruit is lifted to the mouth with chewing, bites and crumbs; a negative reward produces a brief jolt followed by soot and rising smoke, then recovery. These are cartoon feedback effects tied to episode rewards.
+
+### Interactive neural monitor
+
+Select **Observe**, **Decide** or **Learn** to inspect the controller. Observe describes model inputs and the displayed retained plan's constraints. Decide decodes the last action into a bore and year and shows actual guidance/exploration counts and raw Q estimates (before action constraints). Learn reports the latest completed episode's reward, update count and mean absolute TD error. A computing indicator can animate while waiting, but numerical telemetry only advances when an episode completes. Highlights are a software schematic over illustrative brain artwork, not biological neuron locations. Reduced-motion mode retains visible static indicators and all controls.
+
+The duplicate fly has been removed from the mine-world desk. **Control desk** now names the camera shortcut to that station. The separate animated fly enclosure remains above the neural monitor.

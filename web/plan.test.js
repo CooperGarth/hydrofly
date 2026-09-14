@@ -172,3 +172,19 @@ test('fly keeps moving on one clock while waiting and blends phase transitions',
  assert.notEqual(host.querySelector('.pet-mouth').getAttribute('ry'),mouth);
  }finally{pet.dispose();assert.equal(cancelled,true);dom.window.close();}
 });
+
+test('controller inspector exposes real episode telemetry and clears stale learning',async()=>{
+ const {createBrainActivity}=await import('./brain-activity.js');
+ const dom=new JSDOM('<div class="brain"><div id="window"><img/></div></div>');
+ const host=dom.window.document.getElementById('window'),brain=createBrainActivity(host);
+ try{
+ const parent=host.parentElement,info=parent.querySelector('.brain-explanation');
+ brain.setPhase('typing',true);assert.match(parent.querySelector('.brain-live').textContent,/computing/);
+ brain.setModel({feasible:false,confined_valid:true});assert.match(info.textContent,/target exceedance/);
+ brain.update({episode:2,updates:30,parameters:7,reward:-.2,td_error:.1,last_action:5,guided_actions:3,exploratory_actions:2,moves:8,epsilon:.4,last_action_values:[0,1,0,0,0,2,0,0,0]}, {bores:2,years:2});
+ parent.querySelector('[data-inspect=action]').click();assert.match(info.textContent,/Decrease bore 2, year 1/);assert.match(info.textContent,/3 teacher-guided/);
+ parent.querySelector('[data-inspect=update]').click();assert.match(info.textContent,/30 cumulative Q updates/);assert.match(info.textContent,/-0.2000/);
+ brain.setPhase('idle');assert.match(parent.querySelector('.brain-live').textContent,/Latest completed episode 2/);
+ brain.reset();assert.match(info.textContent,/No episode has completed/);assert.equal(host.dataset.processing,'false');
+ }finally{brain.dispose();dom.window.close();}
+});
