@@ -75,3 +75,7 @@ To calculate farther from the mine, change **Aquifer properties → Modelled hal
 - If the confined-aquifer warning appears, sampled heads have fallen outside the model's assumptions. Review the rates and conceptual model before interpreting the result.
 - If an HTTP or timeout error appears, the last successful result remains visible. Retry after checking the connection or use a smaller experiment.
 - If 3-D controls are disabled, this browser could not create a WebGL scene. The numerical controls can still work when the Python service is available.
+
+### Training does not start
+
+The learning panel now reports feasibility checks, first-episode calculation and errors directly. “Starting pumping rates lower sampled head below the confined aquifer roof” means the initial schedule violates the analytical model assumptions; it is not a training freeze. Select **Reset all rates to zero and train** to explicitly replace every bore-year rate with zero and start a new policy. The mine plan, aquifer and teaching settings are retained. No conventional optimiser rates are injected. Alternatively, lower rates manually. Day-zero target failures and impossible borefields require changes to the relevant inputs; resetting pumping cannot repair those conditions.

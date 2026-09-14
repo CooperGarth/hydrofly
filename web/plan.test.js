@@ -71,13 +71,24 @@ test('mine-plan controls use real Python, retain learning, and pause training',{
   el('episodes').value='1';
   await el('train').onclick();assert.match(el('activity').textContent,/No feasible pumping schedule/);
   assert.equal(requests.filter(p=>p==='/api/portable/learn/start').length,0);
+  assert.match(el('learning-summary').textContent,/Training not started: No feasible/);
+  assert.equal(el('restart-training').hidden,true);
   el('conductivity').value='0.1';el('conductivity').dispatchEvent(new w.Event('change'));
+  el('capacity').value='10000';el('capacity').dispatchEvent(new w.Event('change'));await el('evaluate').onclick();
+  for(const input of el('bore-rows').querySelectorAll('input')){input.value='10000';input.onchange();}
   await el('train').onclick();
+  assert.match(el('learning-summary').textContent,/Training not started: Starting pumping rates/);
+  assert.equal(el('restart-training').hidden,false);
+  assert.equal(el('train').disabled,false);
+  assert.match(el('console-message').textContent,/needs attention/);
+  assert.ok([...el('bore-rows').querySelectorAll('input')].every(e=>Number(e.value)===10000));
+  await el('restart-training').onclick();
   assert.equal(el('episode-number').textContent,'1');assert.ok(Number(el('updates').textContent)>0);assert.equal(Number(el('neural-updates').textContent),Number(el('updates').textContent));assert.ok(el('exploration-meter').value>0);
   await el('train').onclick();
   assert.match(el('level-compliance').textContent,/Best training plan/);
   assert.equal(el('episode-number').textContent,'2');
-  assert.equal(requests.filter(p=>p==='/api/portable/learn/start').length,1);
+  assert.equal(requests.filter(p=>p==='/api/portable/learn/start').length,2);
+  assert.equal(el('restart-training').hidden,true);
   // Continuous training must exceed a one-episode batch and honour Pause.
   el('continuous-training').checked=true;
   const originalFetch=w.fetch;let completed=0;
