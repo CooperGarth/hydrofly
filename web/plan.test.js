@@ -132,7 +132,7 @@ test('mine-plan controls use real Python, retain learning, and pause training',{
 
 // Reward feedback must reflect real telemetry; neutral updates are not prizes.
 test('fly companion responds to signed rewards and preserves cues across phase changes',()=>{
- const dom=new JSDOM('<section id="pet"></section>');
+ const dom=new JSDOM('<section id="pet"></section>',{pretendToBeVisual:true});
  const host=dom.window.document.getElementById('pet'),pet=createFlyCompanion(host);
  try{
  assert.equal(host.dataset.mood,'idle');
@@ -144,4 +144,31 @@ test('fly companion responds to signed rewards and preserves cues across phase c
  pet.reset();assert.equal(host.dataset.mood,'idle');
  pet.reward(NaN);assert.equal(host.dataset.mood,'idle');
  }finally{pet.dispose();dom.window.close();}
+});
+
+test('fly keeps moving on one clock while waiting and blends phase transitions',()=>{
+ const dom=new JSDOM('<section id="pet"></section>');const w=dom.window;
+ let callback,cancelled=false;
+ w.requestAnimationFrame=fn=>{callback=fn;return 1;};w.cancelAnimationFrame=()=>{cancelled=true;};
+ const host=w.document.getElementById('pet'),pet=createFlyCompanion(host),fly=host.querySelector('.pet-fly');
+ try{
+ callback(0);callback(16);const first=fly.style.transform;
+ callback(32);assert.notEqual(fly.style.transform,first);
+ const before=fly.style.transform;pet.setPhase('typing',true);
+ assert.equal(fly.style.transform,before,'phase switch must not snap the rendered pose');
+ callback(48);assert.notEqual(fly.style.transform,before);
+ const typing=host.querySelector('.pet-leg').style.transform;
+ callback(64);assert.notEqual(host.querySelector('.pet-leg').style.transform,typing);
+ pet.reward(-1);const zap=fly.style.transform;callback(80);assert.notEqual(fly.style.transform,zap);
+ assert.equal(host.querySelector('.pet-zap').style.opacity,'1');
+ for(let time=96;time<=1200;time+=16)callback(time);
+ assert.ok(Number(host.querySelector('.pet-soot').style.opacity)>.5);
+ assert.ok(Number(host.querySelector('.pet-smoke').style.opacity)>0);
+ assert.equal(host.querySelector('.pet-zap').style.opacity,'0');
+ pet.reward(1);for(let time=1216;time<=2704;time+=16)callback(time);
+ assert.equal(host.querySelector('.pet-bites').style.opacity,'1');
+ assert.ok(Number(host.querySelector('.pet-crumbs').style.opacity)>0);
+ const mouth=host.querySelector('.pet-mouth').getAttribute('ry');callback(2720);
+ assert.notEqual(host.querySelector('.pet-mouth').getAttribute('ry'),mouth);
+ }finally{pet.dispose();assert.equal(cancelled,true);dom.window.close();}
 });
