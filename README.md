@@ -20,7 +20,7 @@ The main interface now includes an editable multi-year mine plan, 4–16 bores, 
 2. Evaluate the plan; select a year to inspect its head surface and bore rates.
 3. Choose a teaching strategy and train the fly. The reward plot, Q updates, exploration and target-success history are measured live.
 4. Run the learned policy with guidance and exploration disabled. The fly operates one bore-year lever at a time. Compare it against the minimum-volume benchmark.
-5. Export the plan and Q-learning record.
+5. Export Excel to save the plan, recalculated results and recent learning statistics. Edit the workbook and use Import Excel to reload the plan; learning restarts.
 
 The detailed [learning specification](docs/reinforcement-learning.md) defines every reward, update, constraint and limitation. The [interface reference record](docs/interface-references.md) documents the Awesome Fly inspiration and geology.
 

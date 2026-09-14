@@ -11,7 +11,7 @@ Can a fruit fly dewater a mine? Give it a mine plan and a pumping strategy, then
 3. Choose an **Objective**, then click **Train fly**.
 4. Watch the brain's update count, episode reward and best-plan water-level graph. Training may initially need to increase pumping to meet the target. Once feasible, the task is to trim the selected impact.
 5. Click **Pause** or let the batch finish. **Continue training** keeps the same learning session and saved best plan.
-6. Click **Run full simulation** to watch that pumping schedule from day 0 through the end of the plan. **Export** downloads your plan and available results as JSON.
+6. Click **Run full simulation** to watch that pumping schedule from day 0 through the end of the plan. **Export Excel** downloads the current plan, recalculated results and recent learning statistics. **Import Excel** loads the same workbook format.
 
 ## Build your mine plan
 
@@ -93,3 +93,15 @@ Reward reactions last four seconds: fruit is lifted to the mouth with chewing, b
 Select **Observe**, **Decide** or **Learn** to inspect the controller. Observe describes model inputs and the displayed retained plan's constraints. Decide decodes the last action into a bore and year and shows actual guidance/exploration counts and raw Q estimates (before action constraints). Learn reports the latest completed episode's reward, update count and mean absolute TD error. A computing indicator can animate while waiting, but numerical telemetry only advances when an episode completes. Highlights are a software schematic over illustrative brain artwork, not biological neuron locations. Reduced-motion mode retains visible static indicators and all controls.
 
 The duplicate fly has been removed from the mine-world desk. **Control desk** now names the camera shortcut to that station. The separate animated fly enclosure remains above the neural monitor.
+
+### Export and import Excel
+
+1. Choose **Export Excel**. HydroFly recalculates the current plan and downloads `hydrofly-mine-plan.xlsx`.
+2. Edit the **Settings** and **Mine plan** sheets in Excel. Each annual row has a year-end floor and one pumping rate per bore. Rates are m³/day; elevations are m AHD. Settings include K, S, thickness, initial head/floor, bore capacity, objective and display extent.
+3. Save as `.xlsx`, then choose **Import Excel** and select that workbook. Import uses exactly the exported input format, validates it and recalculates the analytical results before replacing the app's current plan.
+
+Keep the Read me version marker, sheet names, headers and parameter keys. Inputs must be literal values, not formulas: paste formula results as values before importing. All pumping-rate cells must be populated, including zeros. Years must run consecutively from 1 (maximum 10), and bore columns from Bore 1 (4–16 bores). To change bore count or duration, add/remove corresponding rate columns or annual rows; remove unused cells rather than leaving gaps. The `active_year` setting is zero-based and must remain within the plan (set it to 0 when shortening a plan). Files must be smaller than 2 MB.
+
+**Results** contains a freshly computed full-horizon snapshot, including score, constraint flags, cumulative volume/cost, maximum sampled drawdown, contour reach and monthly head/target/floor values. **Learning**, when present, records recent episode statistics for reference. Neither sheet is an input: imported results are recalculated, and the previous policy is cleared. Workbooks do not resume training checkpoints. Synthetic bore locations are generated from bore count, as in the app; custom coordinates are not part of this format.
+
+Invalid imports leave the current plan and learning untouched. The Excel workbook replaces the former JSON download; legacy JSON files are not accepted by Import Excel.

@@ -11,7 +11,7 @@ let canPause=false;let scene,busy=false,stop=false,session=null,last=null,histor
 try{scene=createMineScene($('mine-scene'));}catch(e){$('loading').textContent='3-D graphics unavailable. Numerical and learning controls still work.';}
 const status=text=>$('activity').textContent=text;
 function phase(value,text,learning=false){flyCompanion.setPhase(value,learning);brainActivity?.setPhase?.(value,learning);if(value!=='idle')brainActivity?.flash(value==='pulling'?'action':'sense');$('control-room').dataset.phase=value;scene?.setActivity(value,text);$('fly-status').textContent=value.toUpperCase();$('console-message').textContent=text;$('brain-window').dataset.phase=value;document.querySelectorAll('#brain-map circle').forEach(n=>n.classList.toggle('active',value==='typing'?(learning?['sense','values','update']:['sense','values']).includes(n.dataset.node):value==='pulling'?n.dataset.node==='action':false));}
-function lock(value,pausable=canPause){busy=value;canPause=value&&pausable;document.querySelectorAll('input,select:not(#playback-speed),.setup button,#fit-target,#simulate,#train,#export,#restart-training').forEach(e=>e.disabled=value);$('pause').disabled=!canPause;document.querySelector('main').setAttribute('aria-busy',String(value));}
+function lock(value,pausable=canPause){busy=value;canPause=value&&pausable;document.querySelectorAll('input,select:not(#playback-speed),.setup button,#fit-target,#simulate,#train,#export,#import-plan,#restart-training').forEach(e=>e.disabled=value);$('pause').disabled=!canPause;document.querySelector('main').setAttribute('aria-busy',String(value));}
 async function post(path,data){
  const portable=path.startsWith('/api/learn/');if(portable){const operation=path.split('/').at(-1);data=operation==='start'?{operation,request:data}:{operation,checkpoint};path='/api/portable/learn';}
  const abort=new AbortController(),started=Date.now(),progress=$('request-status');progress.hidden=false;
@@ -123,7 +123,23 @@ async function runSimulation(){
 $('simulate').onclick=runSimulation;
 
 $('pause').onclick=()=>{if(!canPause)return;stop=true;$('pause').disabled=true;status('Pause requested. Finishing the current calculation and retaining its results…');};
-$('export').onclick=async()=>{if(busy)return;lock(true);status('Preparing export…');try{const learning=session?await post('/api/learn/export',{session}):null;const blob=new Blob([JSON.stringify({plan,result:last,simulation:playback?{timeline:playback.timeline,complete:playback.done,statistics:playback.statistics}:null,learning,benchmark_volume:benchmarkVolume},null,2)],{type:'application/json'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='hydrofly-mine-plan.json';a.click();status('Export downloaded.');setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){status(e.message);}finally{lock(false);}};
+$('export').onclick=async()=>{if(busy||!validForm()||!planReady())return;inputs();lock(true);status('Calculating current plan and preparing Excel workbook…');try{const file=await post('/api/plan/workbook/export',{plan,history});const bytes=Uint8Array.from(atob(file.content),c=>c.charCodeAt(0));const blob=new Blob([bytes],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=file.filename;a.click();status('Excel exported. Edit Settings and Mine plan, then use Import Excel.');setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(e){status(e.message);}finally{lock(false);}};
+$('import-plan').onclick=()=>{if(!busy)$('import-file').click();};
+$('import-file').onchange=async()=>{
+ const file=$('import-file').files[0];if(!file||busy)return;
+ lock(true);status('Validating Excel workbook and calculating the imported plan…');
+ try{
+  if(!file.name.toLowerCase().endsWith('.xlsx')||file.size>2000000)throw Error('Choose a HydroFly .xlsx workbook smaller than 2 MB.');
+  const content=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result.split(',')[1]);reader.onerror=()=>reject(Error('Could not read this workbook.'));reader.readAsDataURL(file);});
+  const imported=await post('/api/plan/workbook/import',{content});
+  // Commit only after parsing, validation AND calculation succeed.
+  plan=imported.plan;invalidate();
+  const fields={'bore-count':plan.bore_count,'year-count':plan.floors.length,'initial-head':plan.initial_head,'initial-floor':plan.initial_floor,'objective':plan.objective,'capacity':plan.capacity,'conductivity':plan.conductivity,'thickness':plan.thickness,'storativity':plan.storativity};
+  for(const [id,value] of Object.entries(fields))$(id).value=value;
+  if(![...$('view-extent').options].some(o=>Number(o.value)===plan.view_extent))$('view-extent').add(new Option(`${plan.view_extent/1000} km`,String(plan.view_extent)));
+  $('view-extent').value=plan.view_extent;display(imported.result);phase('idle','Imported plan evaluated. Ready for training.');status('Excel mine plan imported and recalculated. Previous learning was cleared.');
+ }catch(e){status(`Import failed: ${e.message} Your existing plan was kept.`);}finally{$('import-file').value='';lock(false);}
+};
 $('world-view').onclick=()=>{const active=document.body.classList.toggle('world-mode');$('world-view').textContent=active?'Mine plan':'Expand';};
 $('follow-fly').onclick=()=>scene?.focusFly();$('reset-camera').onclick=()=>{scene?.resetCamera();$('section-view').textContent='Section view';};
 $('section-view').onclick=()=>{$('section-view').textContent=scene?.toggleSection()?'Orbit view':'Section view';};$('head-toggle').onclick=()=>{$('head-toggle').setAttribute('aria-pressed',String(scene?.toggleSurface()));};

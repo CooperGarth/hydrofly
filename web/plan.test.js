@@ -115,8 +115,19 @@ test('mine-plan controls use real Python, retain learning, and pause training',{
   await el('benchmark').onclick();assert.match(el('benchmark-result').textContent,/LP/);
   assert.deepEqual([...el('bore-rows').querySelectorAll('input')].map(e=>e.value),ratesBefore);
   await el('fit-target').onclick();assert.match(el('activity').textContent,/Target-fit pumping applied/);
-  await el('export').onclick();const download=JSON.parse(await exported.text());
-  assert.ok(download.result.statistics);assert.equal(download.result.statistics.pumped_volume_m3,download.result.total_volume);
+  await el('export').onclick();
+  assert.equal(exported.type,'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+  const bytes=new Uint8Array(await exported.arrayBuffer());assert.equal(bytes[0],80);assert.equal(bytes[1],75);
+  const savedRates=[...el('bore-rows').querySelectorAll('input')].map(e=>e.value);
+  await el('all-off').onclick();
+  el('import-plan').onclick();
+  Object.defineProperty(el('import-file'),'files',{configurable:true,value:[new w.File([bytes],'plan.xlsx')]});
+  await el('import-file').onchange();
+  assert.match(el('activity').textContent,/imported and recalculated/);
+  assert.deepEqual([...el('bore-rows').querySelectorAll('input')].map(e=>e.value),savedRates);
+  Object.defineProperty(el('import-file'),'files',{configurable:true,value:[new w.File(['broken'],'bad.xlsx')]});
+  await el('import-file').onchange();assert.match(el('activity').textContent,/Import failed/);
+  assert.deepEqual([...el('bore-rows').querySelectorAll('input')].map(e=>e.value),savedRates);
   // Slow/error responses must show progress immediately, prevent duplicate actions,
   // leave Pause disabled for a one-off evaluation and release all controls on error.
   const realFetch=w.fetch;let finish;w.fetch=()=>new Promise(resolve=>{finish=resolve;});

@@ -142,5 +142,31 @@ from hydrofly.portable import PortableRequest, handle as portable_handle
 def portable_learning(p:PortableRequest):return run_job(lambda:portable_handle(p))
 
 
+from hydrofly.workbook import export_workbook, import_workbook
+
+class WorkbookExport(BaseModel):
+    model_config=ConfigDict(extra='forbid')
+    plan:MinePlan
+    history:list[dict]=Field(default_factory=list,max_length=100)
+
+class WorkbookImport(BaseModel):
+    model_config=ConfigDict(extra='forbid')
+    content:str=Field(max_length=2_700_000)
+
+@app.post('/api/plan/workbook/export')
+def workbook_export(p:WorkbookExport):
+    def build():
+        result=evaluate_plan(p.plan)
+        return {'filename':'hydrofly-mine-plan.xlsx','content':export_workbook(p.plan,result,p.history)}
+    return run_job(build)
+
+@app.post('/api/plan/workbook/import')
+def workbook_import(p:WorkbookImport):
+    def read():
+        plan=import_workbook(p.content)
+        return {'plan':plan.model_dump(),'result':evaluate_plan(plan)}
+    return run_job(read)
+
+
 web=Path(os.getenv("HYDROFLY_WEB",Path(__file__).resolve().parents[2]/"dist"))
 if web.exists():app.mount("/",StaticFiles(directory=web,html=True),name="web")
