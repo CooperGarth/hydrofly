@@ -1,4 +1,5 @@
 import './plan.css';
+import './setup-wizard.js';
 import {createFlyCompanion} from './fly-companion.js';
 import {createBrainActivity} from './brain-activity.js';
 import {createMineScene} from './mine-scene.js';
